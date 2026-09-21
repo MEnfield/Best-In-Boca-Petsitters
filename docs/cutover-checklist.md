@@ -77,21 +77,35 @@ Build settings:
 | Build output directory | `dist` |
 | Node version | `22` (set env var `NODE_VERSION` = `22`) |
 
-### Known issues with the Workers deploy
+### The Workers deploy is configured by `wrangler.jsonc`
 
-Both found on the first build. Neither breaks the site; both should be fixed
-before the custom domain goes on at step 9.
+The first build had two defects, both caused by the repo not telling Cloudflare
+what it wanted. `wrangler.jsonc` now does, and both are fixed:
 
-1. **The build mutates `astro.config.mjs` on every run.** Because the repo has
-   no `wrangler` config, `wrangler deploy` runs `astro add cloudflare`, adds the
-   SSR adapter, and **rebuilds the whole site a second time** as a server
-   Worker. We want plain static assets. The fix is to commit a `wrangler.jsonc`
-   declaring an assets-only deploy, which stops the auto-configuration.
-2. **Every page except `/` 307-redirects to a trailing slash** (`/faq` →
-   `/faq/`). Our canonical tags and sitemap both say `/faq`, so every sitemap
-   URL currently costs a redirect hop. Cloudflare's asset server defaults to
-   `html_handling: "auto-trailing-slash"`; setting `drop-trailing-slash` in the
-   same `wrangler.jsonc` resolves it.
+1. **The build no longer mutates `astro.config.mjs`.** With no wrangler config,
+   `wrangler deploy` ran `astro add cloudflare`, installed the SSR adapter and
+   rebuilt the whole site a second time as a server Worker — with a KV session
+   binding and a warning that sharp cannot run at runtime. Declaring an
+   `assets` block with **no `main`** deploys assets only: no Worker script, no
+   SSR, no second build. Verified by `wrangler deploy --dry-run`: "No bindings
+   found", and the upload is 0.36 KiB of config rather than a Worker bundle.
+2. **Trailing-slash redirects are gone.** `html_handling: "drop-trailing-slash"`
+   makes the server agree with Astro's `trailingSlash: "never"`, so `/faq`
+   serves directly instead of 307-ing to `/faq/`. Every canonical tag and
+   sitemap entry now resolves in one hop.
+
+It also sets `not_found_handling: "404-page"`, so a stale inbound link gets the
+real 404 page — with the nav and the phone number on it — rather than a bare
+response.
+
+**After the custom domain is live (step 9), set `workers_dev` to `false`** in
+`wrangler.jsonc`. The `*.workers.dev` hostname otherwise serves a complete
+duplicate of the site. The canonical tags are absolute and point at the real
+domain so Google will consolidate, but not publishing the duplicate is tidier.
+
+**What to check in the next build log:** no `astro add cloudflare` line, no
+`mode: "server"`, no `[@astrojs/cloudflare]` messages, and one `pnpm build`
+rather than two.
 
 ## 5. Set environment variables
 

@@ -1,0 +1,47 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+
+  // This file exists mainly to stop Cloudflare guessing.
+  //
+  // Without it, `wrangler deploy` treats the repo as unconfigured, runs
+  // `astro add cloudflare` against the build checkout, installs the SSR
+  // adapter and rebuilds the entire site a second time as a server Worker —
+  // complete with a KV session binding and a warning that sharp can't run at
+  // runtime. None of which this site wants: it is seven prerendered HTML
+  // pages and a pile of images.
+  //
+  // With an explicit `assets` block and no `main`, this deploys as an
+  // assets-only Worker: no Worker script, no SSR, no second build.
+
+  "name": "best-in-boca-petsitters",
+  "compatibility_date": "2026-09-21",
+
+  "assets": {
+    "directory": "./dist",
+
+    // Astro is configured with `trailingSlash: "never"`, and every canonical
+    // tag and sitemap entry is written without one. Cloudflare's default
+    // ("auto-trailing-slash") serves folder index files *with* a slash, so
+    // /faq 307-redirected to /faq/ and every sitemap URL cost a redirect hop.
+    // This makes the server agree with the markup.
+    "html_handling": "drop-trailing-slash",
+
+    // Serve our own 404.html for unmatched routes instead of a bare response.
+    // It carries the nav and the phone number, so a stale inbound link still
+    // has somewhere useful to go.
+    "not_found_handling": "404-page"
+  },
+
+  // Keep the *.workers.dev URL available — it is what Holly reviews the site
+  // on before the custom domain is attached (checklist step 8).
+  //
+  // Once www.bocapetsitting.com is live, set this to false. The workers.dev
+  // hostname otherwise serves a full duplicate of the site; the absolute
+  // canonical tags point at the real domain so Google will consolidate, but
+  // not publishing the duplicate at all is tidier.
+  "workers_dev": true,
+
+  "observability": {
+    "enabled": true
+  }
+}

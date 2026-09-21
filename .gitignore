@@ -6,3 +6,7 @@ node_modules/
 .env.production
 .DS_Store
 npm-debug.log*
+
+# Wrangler
+.wrangler/
+worker-configuration.d.ts

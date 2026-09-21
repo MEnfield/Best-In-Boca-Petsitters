@@ -1,7 +1,9 @@
 # Cutover checklist
 
-Run these in order. **Step 14 (cancelling Wix) is last for a reason** — until
-DNS is verified, the Wix site is the rollback.
+Run these in order. **Step 14 (retiring the Wix site) is last for a reason** —
+until DNS is verified, the Wix site is the rollback. Read step 14 before
+cancelling anything: the domain is registered through Wix, so the order of
+operations there matters more than anywhere else in this document.
 
 Anything marked **[Holly]** needs her, not you.
 
@@ -237,12 +239,15 @@ Two routes. **Take option A** — it's reversible and doesn't touch registration
 6. Redirect the apex to `www` — www is what Google has indexed for years, so it
    stays canonical.
 
-**Option B — transfer the domain to Cloudflare Registrar (later, optional)**
+**Option B — transfer the domain to Cloudflare Registrar**
 
-Cheaper (~$10/yr at cost, no markup) and consolidates everything in one place.
-But it needs an unlock plus auth code from Wix, takes up to 7 days, and there's
-a 60-day lock after any registrant change. **Don't do this during launch.** It's
-a good tidy-up once the site has been live and stable for a month.
+Not optional if Holly wants to be rid of Wix: the domain is registered there,
+so leaving it means keeping a Wix account open forever purely to hold it. It is
+also cheaper (~$10/yr at cost vs Wix's typical $20–40).
+
+**But do it after the site is live, not during launch** — see step 14b for the
+procedure. It takes up to 7 days and needs an auth code from Wix. The site
+stays up throughout, because registration and nameservers are independent.
 
 ## 10. Email forwarding (free, and it may also solve 9a)
 
@@ -317,24 +322,61 @@ This isn't code, and it will produce more calls than anything in this repo.
       to 50 will do more for her Maps position — which is where her traffic
       actually comes from — than anything on this website.
 
-## 14. Only now, cancel Wix
+## 14. Retiring the Wix site
 
-Confirm first:
+Holly's goal is that the Wix site goes away entirely. That is **three separate
+things**, and doing them in the wrong order can cost her the domain.
+
+> **The trap:** `bocapetsitting.com` is registered *through Wix* (see step 9).
+> Deleting the Wix site is safe. **Closing or deleting the Wix account is
+> not** — the domain lives in it. Twenty years of history, and every inbound
+> link, directory listing and Google review points at that name. It cannot be
+> rebuilt.
+
+### 14a. Confirm the new site is genuinely live first
 
 - [ ] `https://www.bocapetsitting.com` serves the new site
-- [ ] `/testimonials` redirects
-- [ ] Both missing cat photos are downloaded
+- [ ] `/testimonials` redirects to `/reviews`
+- [ ] **Both missing cat photos are downloaded** (step 1) — they live on
+      `wixstatic.com` and vanish with the site
 - [ ] Search Console shows the sitemap as read
+- [ ] Anything else she wants off the old site is saved
 
-Then cancel **only the Wix Premium site plan** — not the domain subscription.
-They are separate line items (see 9b), and the domain is the one asset here
-that cannot be rebuilt: it carries twenty years of history and every inbound
-link and directory listing points at it.
+Until DNS is verified, the Wix site is the rollback. Don't rush this.
 
-That's **$200–350/year** back, which more than covers the pet-sitter liability
-insurance discussed below.
+### 14b. Move the domain off Wix — do this *before* cancelling anything
 
----
+This is what actually frees her from Wix. Without it she has to keep a Wix
+account open forever just to hold the domain.
+
+1. **Wix → Domains → `bocapetsitting.com` → Advanced → Transfer away from Wix.**
+   Unlock the domain and request the **authorisation (EPP) code**.
+2. Cloudflare → **Domain Registration → Transfer Domains** → enter the domain
+   and the auth code.
+3. Approve the confirmation email. Transfers take **up to 7 days** — the domain
+   keeps resolving throughout, and the nameservers you set in step 9 are
+   unaffected, so **the site stays up the whole time**.
+4. Transferring adds a year to the registration at Cloudflare's at-cost price
+   (~$10 vs Wix's typical $20–40).
+
+> If she'd rather not deal with a transfer, that's a legitimate choice — but
+> then **the Wix account must stay open and the domain subscription must stay
+> on auto-renew**, indefinitely. Say that to her plainly so it's a decision
+> rather than an accident.
+
+### 14c. Cancel the Premium plan and delete the site
+
+Only once 14b has completed (or she's accepted keeping the account):
+
+- [ ] **Cancel the Wix Premium site plan.** That's the **$200–350/year**.
+- [ ] **Delete or unpublish the site itself.** Cancelling the plan alone leaves
+      it live on a free `*.wixsite.com` address — still published, still
+      carrying the old copy, and a duplicate of the real site. Deleting it is
+      what she's actually asking for.
+- [ ] Check **Billing & Payments → Subscriptions** afterwards and confirm
+      nothing unexpected is still billing.
+
+The saving more than covers the pet-sitter liability insurance below.
 
 ## After launch
 

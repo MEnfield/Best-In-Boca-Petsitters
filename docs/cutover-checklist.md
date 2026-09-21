@@ -34,11 +34,20 @@ are downloaded before anything touches the Wix account.
 
 1. Go to <https://web3forms.com>, enter `SHJRising@gmail.com`, and get the
    access key emailed to you.
-2. In the Web3Forms dashboard, add **your own email as a CC recipient** so you
+2. **If it asks for a website URL, use `https://www.bocapetsitting.com`** — the
+   production domain, not the `.pages.dev` one. The field is informational: the
+   access key is bound to the *email address*, not the domain ("an alias to
+   your email", per their docs), and **domain restriction is a Pro feature**.
+   So the key will keep working from the `.pages.dev` preview URL at step 7,
+   which is what you'll be testing against before DNS cutover.
+3. In the Web3Forms dashboard, add **your own email as a CC recipient** so you
    can see whether the site is actually producing leads for the first few
    months.
-3. Keep the key — it goes in step 5. It's a public key by design; it only
-   permits posting to the inbox it's bound to, so it's safe in client HTML.
+4. Keep the key — it goes in step 5. It's a public key by design; it only
+   permits delivery to the inbox it's bound to, never anywhere else, so it's
+   safe in client HTML. The tradeoff of no domain enforcement is that the key
+   could be reused from another site — the worst case is spam into Holly's
+   inbox, which the form's honeypot field handles.
 
 ## 3. Push to GitHub
 

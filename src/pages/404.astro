@@ -1,0 +1,66 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { site } from "@/data/site";
+---
+
+<BaseLayout
+  title="Page not found | Best In Boca Pet Sitters"
+  description="That page doesn’t exist. Here’s how to reach Holly."
+  noindex
+>
+  <section class="section notfound">
+    <div class="container container--narrow text-center">
+      <p class="eyebrow">404</p>
+      <h1>That page has wandered off</h1>
+      <p class="lead notfound__lead">
+        Cats do that. Here&rsquo;s everything else &mdash; or just call me.
+      </p>
+
+      <div class="notfound__actions">
+        <a href={site.phone.href} class="btn btn--primary btn--lg" data-track="tel">
+          Call {site.phone.display}
+        </a>
+        <a href="/" class="btn btn--secondary btn--lg">Back to the home page</a>
+      </div>
+
+      <ul class="notfound__links">
+        <li><a href="/about">About Holly</a></li>
+        <li><a href="/cat-sitting">Cat sitting &amp; prices</a></li>
+        <li><a href="/snowbird-cat-care">Snowbird &amp; long-trip care</a></li>
+        <li><a href="/reviews">Reviews</a></li>
+        <li><a href="/faq">Questions</a></li>
+        <li><a href="/contact">Book a meet &amp; greet</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .notfound {
+    padding-block: var(--sp-9);
+  }
+
+  .notfound__lead {
+    margin-top: var(--sp-4);
+    margin-inline: auto;
+    max-width: 44ch;
+  }
+
+  .notfound__actions {
+    margin-top: var(--sp-6);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--sp-3);
+  }
+
+  .notfound__links {
+    list-style: none;
+    margin: var(--sp-7) 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--sp-3) var(--sp-5);
+  }
+</style>

@@ -1,0 +1,139 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageHeader from "@/components/PageHeader.astro";
+import PriceCard from "@/components/PriceCard.astro";
+import FaqList from "@/components/FaqList.astro";
+import CtaBand from "@/components/CtaBand.astro";
+
+import { site } from "@/data/site";
+import { faqs } from "@/data/faqs";
+
+const title = `Cat Sitting Prices in Boca Raton | $${site.pricing.baseVisit} a Visit`;
+const description = `In-home cat sitting from $${site.pricing.baseVisit} a visit in West Boca Raton, Delray Beach and Deerfield Beach. Litter, food, fresh water, mail and plants included. No minimum visits, no boarding, no hidden fees.`;
+
+/** Pricing and booking questions, repeated here so the page answers itself. */
+const pricingFaqs = faqs.filter(
+  (f) => f.category === "Booking & payment" || f.category === "Area & travel",
+);
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  serviceType: "In-home cat sitting",
+  provider: { "@id": `${site.url}/#business` },
+  areaServed: site.serviceAreas.map((name) => ({ "@type": "City", name })),
+  offers: {
+    "@type": "Offer",
+    price: site.pricing.baseVisit,
+    priceCurrency: "USD",
+    description: `Per visit, one cat. $${site.pricing.additionalCat} for each additional cat.`,
+    availability: "https://schema.org/InStock",
+  },
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: pricingFaqs.map((faq) => ({
+    "@type": "Question",
+    // Strip the authored HTML entities/tags — schema wants plain text.
+    name: faq.question.replace(/&amp;/g, "&").replace(/<[^>]+>/g, ""),
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
+    },
+  })),
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  schema={[serviceSchema, faqSchema]}
+>
+  <PageHeader
+    eyebrow="Cat sitting &amp; prices"
+    title="What it costs, and what you get"
+    lead="One price, stated plainly, with the extras listed rather than saved for the invoice."
+  />
+
+  <section class="section">
+    <div class="container">
+      <PriceCard />
+    </div>
+  </section>
+
+  <section class="section section--tint">
+    <div class="container container--narrow prose">
+      <h2>What a visit actually looks like</h2>
+      <p>
+        I let myself in however we&rsquo;ve agreed &mdash; a key, a keypad, a
+        door code. Fresh water down, food as you&rsquo;ve described it, litter
+        box scooped, treats if you allow them.
+      </p>
+      <p>
+        Then I spend time with your cat, which for a lot of them is the part
+        that matters. Some want a lap for ten minutes. Some want the wand toy.
+        Some want to watch me suspiciously from the top of the bookcase, and
+        that&rsquo;s fine too &mdash; they usually come round by the third
+        visit.
+      </p>
+      <p>
+        While I&rsquo;m there I&rsquo;ll bring in the mail and any packages,
+        water the plants, and change the lights, blinds, TV or music so the
+        house doesn&rsquo;t look empty. Then you get a text with a photo and a
+        note about how it went.
+      </p>
+
+      <h2>How many visits does my cat need?</h2>
+      <p>
+        Most cats do well on one visit a day. Some do better with two &mdash;
+        particularly if they&rsquo;re anxious alone, eat on a split schedule, or
+        there are several of them sorting out a pecking order.
+      </p>
+      <p>
+        There&rsquo;s no minimum. If you&rsquo;re away one night and want a
+        single visit, that&rsquo;s perfectly fine. We&rsquo;ll work out what
+        your cat actually needs when I meet them, and I&rsquo;ll tell you
+        honestly if I think you&rsquo;re booking more than necessary.
+      </p>
+
+      <h2>Cats I&rsquo;m not the right person for</h2>
+      <p>
+        I don&rsquo;t give medication of any kind, including pills. I only care
+        for indoor cats. And I don&rsquo;t take on cats who are seriously ill or
+        near the end of their lives &mdash; they need someone with veterinary
+        training who can handle a bad night properly.
+      </p>
+      <p>
+        If that&rsquo;s your cat, please call anyway. I know the people in this
+        area and I&rsquo;m glad to point you somewhere better suited.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container container--narrow">
+      <h2 class="cat-sitting__faq-title">Questions about booking and cost</h2>
+      <FaqList items={pricingFaqs} />
+      <p class="cat-sitting__faq-more">
+        <a href="/faq" class="btn btn--secondary">All questions answered</a>
+      </p>
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Ready when you are"
+    body="The meet & greet is free. Call me, or send your dates and I’ll get back to you."
+  />
+</BaseLayout>
+
+<style>
+  .cat-sitting__faq-title {
+    margin-bottom: var(--sp-5);
+  }
+
+  .cat-sitting__faq-more {
+    margin-top: var(--sp-6);
+  }
+</style>

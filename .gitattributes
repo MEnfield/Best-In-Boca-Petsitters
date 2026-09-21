@@ -1,0 +1,11 @@
+# Normalise line endings. Everything is authored LF; Git checks out native.
+* text=auto eol=lf
+
+# Binary assets — never touch these.
+*.jpg  binary
+*.jpeg binary
+*.png  binary
+*.webp binary
+*.avif binary
+*.woff  binary
+*.woff2 binary

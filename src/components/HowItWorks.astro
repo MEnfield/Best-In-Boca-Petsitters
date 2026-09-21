@@ -1,0 +1,106 @@
+---
+/**
+ * The three-step sequence.
+ *
+ * This exists to fix a specific conversion problem: payment is due at booking
+ * and it isn’t refundable, which sounds alarming until you know the free
+ * in-person meeting happens first. Showing the order dissolves that worry
+ * without a word of reassurance-speak.
+ */
+const steps = [
+  {
+    n: 1,
+    title: "We meet, free of charge",
+    body: "Call or send me a note and we’ll arrange a time. I come to your home, meet your cat on their own turf, and you decide whether I’m the right fit. No cost, no obligation.",
+  },
+  {
+    n: 2,
+    title: "You book your dates",
+    body: "Once we’ve met and the paperwork’s signed, booking is a text message. I’ll confirm your dates and hold them for you.",
+  },
+  {
+    n: 3,
+    title: "You get photos while you’re away",
+    body: "Every visit, every day, or once a week — however much you want to hear from me. Most people find the first photo is the moment they finally relax.",
+  },
+];
+---
+
+<section class="section how">
+  <div class="container">
+    <div class="how__head">
+      <p class="eyebrow">How it works</p>
+      <h2>Three steps, and the first one is free</h2>
+      <p class="lead muted">
+        You&rsquo;ll have met me in person before you ever send a payment.
+      </p>
+    </div>
+
+    <ol class="how__steps">
+      {
+        steps.map((step) => (
+          <li class="how__step">
+            <span class="how__num" aria-hidden="true">
+              {step.n}
+            </span>
+            <h3 class="how__title">{step.title}</h3>
+            <p class="how__body">{step.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .how__head {
+    max-width: 44ch;
+    margin-bottom: var(--sp-7);
+  }
+
+  .how__steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-6);
+    counter-reset: step;
+  }
+
+  @media (min-width: 56em) {
+    .how__steps {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--sp-7);
+    }
+  }
+
+  .how__step {
+    position: relative;
+    padding-top: var(--sp-2);
+  }
+
+  .how__num {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: var(--sp-4);
+    border-radius: var(--r-full);
+    background-color: var(--c-blush);
+    color: var(--c-rose);
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 40, "WONK" 1;
+    font-size: 1.375rem;
+    font-weight: 700;
+  }
+
+  .how__title {
+    font-size: var(--fs-h3);
+    margin-bottom: var(--sp-2);
+  }
+
+  .how__body {
+    color: var(--c-ink-muted);
+    max-width: 42ch;
+  }
+</style>

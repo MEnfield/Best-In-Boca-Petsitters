@@ -1,0 +1,87 @@
+---
+import { site } from "@/data/site";
+
+/**
+ * Five facts, one band, high on the page.
+ *
+ * Someone arriving from Google Maps is deciding whether this person is legitimate
+ * before they scroll. These are the five things that answer it fastest, and
+ * every one of them is verifiable.
+ */
+const years = new Date().getFullYear() - site.foundedYear;
+
+const facts = [
+  { value: `${years} years`, label: `Caring for Boca cats since ${site.foundedYear}` },
+  { value: `${site.reviews.rating} ★`, label: `${site.reviews.count} reviews on Google` },
+  { value: "Cats only", label: "A specialist, not a generalist" },
+  { value: "In your home", label: "No boarding, no kennels" },
+  { value: "Signed agreement", label: "Service contract & vet release" },
+];
+---
+
+<section class="trustbar" aria-label="Why people trust Holly">
+  <div class="container">
+    <ul class="trustbar__list">
+      {
+        facts.map((fact) => (
+          <li class="trustbar__item">
+            <span class="trustbar__value">{fact.value}</span>
+            <span class="trustbar__label">{fact.label}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .trustbar {
+    padding-block: var(--sp-5);
+    background-color: var(--c-sage-soft);
+    border-block: 1px solid color-mix(in srgb, var(--c-sage) 25%, transparent);
+  }
+
+  .trustbar__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-4) var(--sp-5);
+    grid-template-columns: repeat(2, 1fr);
+    text-align: center;
+  }
+
+  @media (min-width: 48em) {
+    .trustbar__list {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+
+  .trustbar__item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+
+  /* The fifth item would sit alone on a 2-column phone layout; centre it. */
+  @media (max-width: 47.999em) {
+    .trustbar__item:last-child {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .trustbar__value {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 40, "WONK" 1;
+    font-size: var(--fs-h4);
+    font-weight: 600;
+    color: var(--c-plum);
+    line-height: 1.2;
+  }
+
+  .trustbar__label {
+    font-size: var(--fs-sm);
+    line-height: 1.45;
+    color: var(--c-ink-muted);
+  }
+</style>

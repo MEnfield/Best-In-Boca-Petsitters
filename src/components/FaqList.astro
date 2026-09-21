@@ -1,0 +1,108 @@
+---
+import type { Faq } from "@/data/faqs";
+
+interface Props {
+  items: Faq[];
+  /** Renders the first item open — useful on a short teaser list. */
+  openFirst?: boolean;
+}
+
+const { items, openFirst = false } = Astro.props;
+---
+
+{/*
+  Built on <details>/<summary>, so it expands and collapses with zero
+  JavaScript and is keyboard accessible and screen-reader announced for free.
+  Browsers also expand a closed <details> to reveal an in-page find match, so
+  the answers stay findable with Ctrl+F.
+*/}
+<div class="faq-list">
+  {
+    items.map((faq, index) => (
+      <details class="faq" open={openFirst && index === 0}>
+        <summary class="faq__q">
+          <span set:html={faq.question} />
+          <svg
+            class="faq__chevron"
+            viewBox="0 0 20 20"
+            width="20"
+            height="20"
+            aria-hidden="true"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="m5 8 5 5 5-5" />
+          </svg>
+        </summary>
+        <div class="faq__a prose" set:html={faq.answer} />
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  .faq-list {
+    display: grid;
+    gap: var(--sp-3);
+  }
+
+  .faq {
+    background-color: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+  }
+
+  .faq__q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-4);
+    /* Comfortably past the 44px minimum target. */
+    min-height: 3.5rem;
+    padding: var(--sp-4) var(--sp-5);
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 40, "WONK" 1;
+    font-size: var(--fs-h4);
+    font-weight: 600;
+    color: var(--c-plum);
+    list-style: none;
+  }
+
+  /* Suppress the native disclosure triangle in both engines. */
+  .faq__q::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__q:hover {
+    background-color: var(--c-blush-tint);
+  }
+
+  .faq__chevron {
+    flex-shrink: 0;
+    color: var(--c-rose);
+    transition: transform 0.18s ease;
+  }
+
+  .faq[open] .faq__q {
+    background-color: var(--c-blush-tint);
+    border-bottom: 1px solid var(--c-border);
+  }
+
+  .faq[open] .faq__chevron {
+    transform: rotate(180deg);
+  }
+
+  .faq__a {
+    padding: var(--sp-5);
+    color: var(--c-ink);
+  }
+
+  .faq__a :global(p) {
+    max-width: 68ch;
+  }
+</style>

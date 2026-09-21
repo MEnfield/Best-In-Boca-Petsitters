@@ -1,0 +1,97 @@
+---
+import { Image } from "astro:assets";
+import { cats } from "@/data/cats";
+
+interface Props {
+  /** Show a subset — the home page doesn’t need all fifteen. */
+  limit?: number;
+  heading?: string;
+  intro?: string;
+}
+
+const {
+  limit,
+  heading = "Some of the cats I look after",
+  intro = "Every one of these is a real client’s cat, photographed on one of my visits. Twenty years of them.",
+} = Astro.props;
+
+const shown = limit ? cats.slice(0, limit) : cats;
+---
+
+<section class="section section--tint gallery">
+  <div class="container">
+    <div class="gallery__head">
+      <p class="eyebrow">The regulars</p>
+      <h2>{heading}</h2>
+      <p class="lead muted">{intro}</p>
+    </div>
+
+    <ul class="gallery__grid">
+      {
+        shown.map((cat) => (
+          <li class="gallery__item">
+            <Image
+              src={cat.src}
+              alt={cat.alt}
+              widths={[240, 400, 640]}
+              sizes="(min-width: 64em) 240px, (min-width: 40em) 30vw, 45vw"
+              loading="lazy"
+              class="gallery__img"
+            />
+            <span class="gallery__name">{cat.caption ?? cat.name}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .gallery__head {
+    max-width: 48ch;
+    margin-bottom: var(--sp-6);
+  }
+
+  .gallery__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-4);
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 40em) {
+    .gallery__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 64em) {
+    .gallery__grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+
+  .gallery__item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+  }
+
+  .gallery__img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: var(--r-lg);
+    background-color: var(--c-blush);
+  }
+
+  .gallery__name {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 40, "WONK" 1;
+    font-size: 1rem;
+    color: var(--c-plum);
+    text-align: center;
+  }
+</style>

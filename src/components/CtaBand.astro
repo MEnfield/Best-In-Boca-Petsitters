@@ -1,0 +1,76 @@
+---
+import { site } from "@/data/site";
+
+interface Props {
+  heading?: string;
+  body?: string;
+}
+
+const {
+  heading = "Let’s meet — it’s free",
+  body = "Call me, or send a few details and I’ll get back to you. We’ll find a time for me to come and meet your cat, with no cost and no obligation.",
+} = Astro.props;
+---
+
+<section class="cta">
+  <div class="container container--narrow cta__inner">
+    <h2 class="cta__heading">{heading}</h2>
+    <p class="cta__body">{body}</p>
+
+    <div class="cta__actions">
+      <a href={site.phone.href} class="btn btn--primary btn--lg" data-track="tel">
+        Call {site.phone.display}
+      </a>
+      <a href="/contact" class="btn btn--secondary btn--lg">
+        Book a meet &amp; greet
+      </a>
+    </div>
+
+    <p class="cta__hours muted">
+      {site.hours.display} &middot; {site.phone.vanity}
+    </p>
+  </div>
+</section>
+
+<style>
+  .cta {
+    padding-block: var(--section-y);
+    background-color: var(--c-blush);
+    border-block: 1px solid var(--c-blush-deep);
+  }
+
+  .cta__inner {
+    text-align: center;
+  }
+
+  .cta__heading {
+    font-size: var(--fs-h2);
+  }
+
+  .cta__body {
+    margin-top: var(--sp-4);
+    margin-inline: auto;
+    max-width: 52ch;
+    font-size: var(--fs-lg);
+    color: var(--c-ink);
+  }
+
+  .cta__actions {
+    margin-top: var(--sp-6);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--sp-3);
+  }
+
+  @media (max-width: 30em) {
+    .cta__actions .btn {
+      width: 100%;
+    }
+  }
+
+  .cta__hours {
+    margin-top: var(--sp-4);
+    font-size: var(--fs-sm);
+  }
+</style>

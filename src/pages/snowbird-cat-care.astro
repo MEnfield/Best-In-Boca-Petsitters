@@ -1,0 +1,230 @@
+---
+import { Image } from "astro:assets";
+
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageHeader from "@/components/PageHeader.astro";
+import ReviewCard from "@/components/ReviewCard.astro";
+import CtaBand from "@/components/CtaBand.astro";
+
+import { site } from "@/data/site";
+import { publishedReviews } from "@/data/reviews";
+import { heroImage } from "@/data/cats";
+
+/**
+ * The long-tail page.
+ *
+ * Boca empties out from roughly May to October. "Someone to look in on my cat
+ * and my house while I’m up north for the summer" is a real, high-value query
+ * that the marketplaces are structurally bad at answering — nobody hands a
+ * churning gig-app stranger their house for three months. Holly has done
+ * exactly this for twenty years.
+ */
+const title = "Snowbird & Long-Trip Cat Care in Boca Raton | Weeks or Months";
+const description = `Going north for the summer or away for months? In-home cat care plus mail, plants and a lived-in house in West Boca, Delray Beach and Deerfield Beach. The same sitter throughout, since ${site.foundedYear}.`;
+
+const relevant = publishedReviews.filter((r) =>
+  /month|weeks|3 weeks|20 days|10 days|AC unit/i.test(r.body),
+);
+
+const houseTasks = [
+  {
+    title: "Mail and packages brought in",
+    body: "Nothing visibly piling up at the door, which is the first thing anyone walking past notices about an empty house.",
+  },
+  {
+    title: "Plants watered",
+    body: "Through a Florida summer, on whatever schedule they actually need.",
+  },
+  {
+    title: "The house kept looking occupied",
+    body: "Lights, blinds, TV and music moved around between visits rather than left in one fixed pattern.",
+  },
+  {
+    title: "Someone physically inside, regularly",
+    body: "A leak, a failed air conditioner, a tripped breaker — found in days rather than discovered in October.",
+  },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <PageHeader
+    eyebrow="Snowbirds &amp; long trips"
+    title="Away for the summer? Your cat can stay home."
+    lead="Weeks or months, the same sitter throughout — with your house looked after at the same time."
+  />
+
+  <section class="section">
+    <div class="container snowbird__intro">
+      <div class="prose">
+        <p class="lead">
+          Boca empties out around May and fills up again in the autumn. A good
+          number of my clients are gone for three months or more, and their cats
+          stay exactly where they are.
+        </p>
+        <p>
+          A long absence is a different job from a long weekend. Over three
+          months, the house matters as much as the cat &mdash; and the
+          relationship matters more than either, because you need to actually
+          trust the person who has your key in July when you&rsquo;re a thousand
+          miles away.
+        </p>
+        <p>
+          That&rsquo;s the part a booking app can&rsquo;t give you. Sitters on
+          those platforms turn over constantly, and you may not get the same
+          person twice. I&rsquo;ve been doing this since {site.foundedYear}, and
+          for a long trip you&rsquo;ll have met me in person before you leave.
+        </p>
+      </div>
+
+      <Image
+        src={heroImage}
+        alt="A cat settled comfortably at home during a long absence"
+        widths={[420, 640]}
+        sizes="(min-width: 64em) 40vw, 92vw"
+        loading="lazy"
+        class="snowbird__img"
+      />
+    </div>
+  </section>
+
+  <section class="section section--tint">
+    <div class="container">
+      <div class="snowbird__head">
+        <p class="eyebrow">While you&rsquo;re gone</p>
+        <h2>The house, as well as the cat</h2>
+        <p class="lead muted">
+          All of this is included in the visit &mdash; it isn&rsquo;t an
+          add-on.
+        </p>
+      </div>
+
+      <ul class="snowbird__tasks">
+        {
+          houseTasks.map((task) => (
+            <li class="card">
+              <h3 class="snowbird__task-title">{task.title}</h3>
+              <p class="muted">{task.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container container--narrow prose">
+      <h2>How to set up a long absence</h2>
+      <p>
+        <strong>Call well before you go.</strong> For a trip of a month or more
+        I&rsquo;d rather we met a few weeks ahead than a few days &mdash; it
+        gives your cat a chance to meet me twice, and gives us time to sort out
+        the details without rushing.
+      </p>
+      <p>
+        <strong>We&rsquo;ll agree a visit rhythm.</strong> Most long-absence
+        clients settle on daily visits. Some go to twice a day for a nervous
+        cat, or where two cats need feeding apart.
+      </p>
+      <p>
+        <strong>Decide how much you want to hear from me.</strong> Over three
+        months, a daily photo can become a lot of messages. Plenty of long-trip
+        clients prefer a weekly note with photos, and a call straight away if
+        anything needs them. Whatever suits &mdash; you can change it any time.
+      </p>
+      <p>
+        <strong>Leave me a contact who&rsquo;s local.</strong> If you&rsquo;re
+        three time zones away, it helps to have someone nearby I can reach
+        quickly. Most of the time it never gets used.
+      </p>
+
+      <h2>What it costs</h2>
+      <p>
+        The same as any other visit: <strong>${site.pricing.baseVisit}</strong>,
+        plus ${site.pricing.additionalCat} for each additional cat, and
+        ${site.pricing.mileageSurcharge} a visit if you&rsquo;re more than{" "}
+        {site.pricing.freeRadiusMiles} miles from me in West Boca. Major
+        holidays are ${site.pricing.holidaySurcharge} a visit, which over a
+        summer absence usually means none at all.
+      </p>
+      <p>
+        <a href="/cat-sitting">See the full pricing</a>
+      </p>
+    </div>
+  </section>
+
+  {
+    relevant.length > 0 && (
+      <section class="section section--tint">
+        <div class="container">
+          <h2 class="snowbird__reviews-title">
+            Clients who&rsquo;ve left me to it for weeks
+          </h2>
+          <div class="grid grid--3">
+            {relevant.slice(0, 3).map((review) => (
+              <ReviewCard review={review} truncate />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <CtaBand
+    heading="Planning a long trip?"
+    body="Call me well ahead and we’ll get the meet & greet in the diary before you go."
+  />
+</BaseLayout>
+
+<style>
+  .snowbird__intro {
+    display: grid;
+    gap: var(--sp-6);
+    align-items: center;
+  }
+
+  @media (min-width: 64em) {
+    .snowbird__intro {
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: var(--sp-8);
+    }
+  }
+
+  .snowbird__intro p {
+    max-width: 62ch;
+  }
+
+  .snowbird__img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--r-xl);
+  }
+
+  .snowbird__head {
+    max-width: 48ch;
+    margin-bottom: var(--sp-6);
+  }
+
+  .snowbird__tasks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-4);
+  }
+
+  @media (min-width: 40em) {
+    .snowbird__tasks {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .snowbird__task-title {
+    font-size: var(--fs-h4);
+    margin-bottom: var(--sp-2);
+  }
+
+  .snowbird__reviews-title {
+    margin-bottom: var(--sp-6);
+  }
+</style>

@@ -1,0 +1,112 @@
+---
+import type { Review } from "@/data/reviews";
+
+interface Props {
+  review: Review;
+  /** Home page shows a trimmed version; the reviews page shows it in full. */
+  truncate?: boolean;
+}
+
+const { review, truncate = false } = Astro.props;
+
+/**
+ * Truncation trims at a sentence boundary rather than mid-word, so a shortened
+ * quote still reads as something a person wrote.
+ */
+function excerpt(text: string, limit = 280): string {
+  if (text.length <= limit) return text;
+  const cut = text.slice(0, limit);
+  const lastStop = Math.max(
+    cut.lastIndexOf(". "),
+    cut.lastIndexOf("! "),
+    cut.lastIndexOf("? "),
+  );
+  return lastStop > limit * 0.5
+    ? cut.slice(0, lastStop + 1)
+    : `${cut.trimEnd()}…`;
+}
+
+const body = truncate ? excerpt(review.body) : review.body;
+const wasTrimmed = body !== review.body;
+---
+
+<figure class="review">
+  {/*
+    role="img" is required here: aria-label is prohibited on a bare <div>, so
+    without a role the label is dropped and a screen reader announces the raw
+    star glyphs instead.
+  */}
+  <div class="review__stars" role="img" aria-label="Rated five out of five">
+    <span aria-hidden="true">★★★★★</span>
+  </div>
+
+  <blockquote class="review__quote">
+    <p>{body}</p>
+  </blockquote>
+
+  <figcaption class="review__by">
+    <span class="review__author">{review.author}</span>
+    {review.tenure && <span class="review__tenure">{review.tenure}</span>}
+    {
+      wasTrimmed && (
+        <a href="/reviews" class="review__more">
+          Read the full review
+        </a>
+      )
+    }
+  </figcaption>
+</figure>
+
+<style>
+  .review {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    margin: 0;
+    padding: var(--sp-5);
+    background-color: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    height: 100%;
+  }
+
+  .review__stars {
+    color: var(--c-rose);
+    font-size: 1.0625rem;
+    letter-spacing: 0.1em;
+    line-height: 1;
+  }
+
+  .review__quote {
+    margin: 0;
+    flex: 1 0 auto;
+  }
+
+  .review__quote p {
+    color: var(--c-ink);
+  }
+
+  .review__by {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--sp-2) var(--sp-3);
+    padding-top: var(--sp-3);
+    border-top: 1px solid var(--c-border);
+  }
+
+  .review__author {
+    font-weight: 700;
+    color: var(--c-plum);
+  }
+
+  .review__tenure {
+    font-size: var(--fs-sm);
+    color: var(--c-ink-muted);
+  }
+
+  .review__more {
+    font-size: var(--fs-sm);
+    margin-left: auto;
+  }
+</style>

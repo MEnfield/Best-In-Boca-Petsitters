@@ -1,0 +1,226 @@
+---
+import "@fontsource-variable/fraunces";
+import "@fontsource-variable/nunito-sans";
+import "@/styles/global.css";
+import "@/styles/forms.css";
+
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import StickyCallBar from "@/components/StickyCallBar.astro";
+import { site } from "@/data/site";
+
+interface Props {
+  title: string;
+  description: string;
+  /** Extra JSON-LD for this page (FAQPage, Service, BreadcrumbList…). */
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+  /** Set true on pages that shouldn’t be indexed. */
+  noindex?: boolean;
+}
+
+const { title, description, schema, noindex = false } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href.replace(
+  /\/$/,
+  "",
+);
+
+/**
+ * The LocalBusiness record. This is the piece that makes the site corroborate
+ * the Google Business Profile — name, phone, hours, areas and categories all
+ * have to agree with what’s on the Profile, or the agreement signal is lost.
+ *
+ * Address is deliberately city-level: Holly does not want her street address
+ * public, and the Business Profile should be set to "service-area business"
+ * for the same reason.
+ *
+ * Note on aggregateRating: Google generally ignores self-serving review markup
+ * for a site’s own business, so don’t expect stars in the search result. It’s
+ * accurate data and harmless to declare; the real stars come from the Maps
+ * listing.
+ */
+const localBusiness = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": `${site.url}/#business`,
+  name: site.name,
+  description: site.shortDescription,
+  url: site.url,
+  telephone: site.phone.display,
+  email: site.email.address,
+  foundingDate: String(site.foundedYear),
+  priceRange: "$$",
+  currenciesAccepted: "USD",
+  paymentAccepted: site.pricing.paymentMethods.join(", "),
+  knowsAbout: [
+    "Cat sitting",
+    "In-home pet care",
+    "Litter box care",
+    "House sitting for seasonal residents",
+  ],
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: site.location.locality,
+    addressRegion: site.location.region,
+    postalCode: site.location.postalCode,
+    addressCountry: site.location.country,
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: site.location.latitude,
+    longitude: site.location.longitude,
+  },
+  areaServed: site.serviceAreas.map((name) => ({
+    "@type": "City",
+    name,
+  })),
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ],
+      opens: site.hours.opens,
+      closes: site.hours.closes,
+    },
+  ],
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: site.reviews.rating,
+    reviewCount: site.reviews.count,
+    bestRating: 5,
+  },
+  founder: {
+    "@type": "Person",
+    name: site.owner,
+  },
+};
+
+const extraSchema = schema
+  ? Array.isArray(schema)
+    ? schema
+    : [schema]
+  : [];
+
+const analyticsToken = import.meta.env.PUBLIC_CF_ANALYTICS_TOKEN;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {/* A canonical on a noindex page is just noise — skip it. */}
+    {noindex ? (
+      <meta name="robots" content="noindex, nofollow" />
+    ) : (
+      <link rel="canonical" href={canonical} />
+    )}
+
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#fffbf8" />
+
+    {/* Open Graph — what shows when someone texts the link to a neighbour. */}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(localBusiness)}
+    />
+    {
+      extraSchema.map((item) => (
+        <script type="application/ld+json" set:html={JSON.stringify(item)} />
+      ))
+    }
+
+    {
+      /* Cloudflare Web Analytics: no cookies, so no consent banner needed.
+         Token comes from the Cloudflare dashboard — see the cutover checklist.
+         Absent locally, so nothing loads in development. */
+      analyticsToken && (
+        <script
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={`{"token":"${analyticsToken}","spa":true}`}
+        />
+      )
+    }
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <StickyCallBar />
+
+    <script>
+      /**
+       * Conversion tracking for phone taps.
+       *
+       * The primary call to action is a phone call, which normally leaves no
+       * trace in analytics at all — so without this, nobody can ever answer
+       * "is the website working?".
+       *
+       * Cloudflare Web Analytics is loaded in SPA mode, which means it records
+       * a view on every history change. Pushing a synthetic URL and immediately
+       * restoring the real one registers the tap as a pageview of
+       * /event/call-tap, which shows up in the dashboard as a countable row.
+       * The visitor sees nothing and the dialer opens as normal.
+       */
+      const trackEvent = (name: string) => {
+        if (!("pushState" in history)) return;
+        const real = location.pathname + location.search;
+        try {
+          history.pushState({}, "", `/event/${name}`);
+          history.replaceState({}, "", real);
+        } catch {
+          /* Tracking must never break the thing it’s measuring. */
+        }
+      };
+
+      document.addEventListener("click", (event) => {
+        const el = (event.target as HTMLElement | null)?.closest<HTMLElement>(
+          "[data-track]",
+        );
+        if (el) trackEvent(el.dataset.track ?? "unknown");
+      });
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  main {
+    flex: 1 0 auto;
+  }
+
+  /* Stop background scroll while the mobile nav drawer is open. */
+  body.nav-open {
+    overflow: hidden;
+  }
+</style>

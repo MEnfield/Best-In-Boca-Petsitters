@@ -1,0 +1,205 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageHeader from "@/components/PageHeader.astro";
+import ContactForm from "@/components/ContactForm";
+
+import { site, WEB3FORMS_KEY } from "@/data/site";
+
+const title = `Book a Free Meet & Greet | Cat Sitter in Boca Raton`;
+const description = `Arrange a free, no-obligation meet & greet with Holly. Call ${site.phone.display} or send your dates, community and how many cats. Serving West Boca Raton, Delray Beach and Deerfield Beach.`;
+
+/** Surfaced at build time so a missing key is caught before launch, not after. */
+const keyConfigured = WEB3FORMS_KEY !== "REPLACE_WITH_WEB3FORMS_ACCESS_KEY";
+if (!keyConfigured && import.meta.env.PROD) {
+  console.warn(
+    "\n[contact] PUBLIC_WEB3FORMS_KEY is not set — the contact form will not deliver.\n" +
+      "Set it in Cloudflare Pages → Settings → Environment variables before launch.\n",
+  );
+}
+---
+
+<BaseLayout title={title} description={description}>
+  <PageHeader
+    eyebrow="Get in touch"
+    title="Let’s meet your cat"
+    lead="The meet & greet is free and there’s no obligation. I’ll come to your home, meet your cat, and you decide from there."
+  />
+
+  <section class="section contact">
+    <div class="container contact__layout">
+      <div class="contact__form-col">
+        <h2 class="contact__heading">Send me a few details</h2>
+        <p class="muted contact__sub">
+          These are the same things I&rsquo;d ask you on the phone. Takes about
+          a minute.
+        </p>
+
+        <ContactForm
+          client:load
+          accessKey={WEB3FORMS_KEY}
+          phoneDisplay={site.phone.display}
+          phoneHref={site.phone.href}
+        />
+      </div>
+
+      <aside class="contact__aside">
+        <div class="contact__card">
+          <h2 class="contact__card-title">Rather just call?</h2>
+          <p class="muted">
+            Honestly, this is the fastest way to reach me &mdash; especially if
+            your dates are close.
+          </p>
+          <a
+            href={site.phone.href}
+            class="btn btn--primary btn--lg btn--block"
+            data-track="tel"
+          >
+            {site.phone.display}
+          </a>
+          <p class="contact__vanity muted">
+            That&rsquo;s {site.phone.vanity}, if it&rsquo;s easier to remember.
+          </p>
+          <dl class="contact__details">
+            <div>
+              <dt>Hours</dt>
+              <dd>{site.hours.display}</dd>
+            </div>
+            <div>
+              <dt>Email</dt>
+              <dd><a href={site.email.href}>{site.email.address}</a></dd>
+            </div>
+            <div>
+              <dt>Areas</dt>
+              <dd>{site.serviceAreas.join(" · ")}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="contact__card contact__card--soft">
+          <h2 class="contact__card-title">What happens next</h2>
+          <ol class="contact__steps">
+            <li>I&rsquo;ll get back to you to find a time that suits.</li>
+            <li>
+              I come to your home, meet your cat, and we go through their
+              routine.
+            </li>
+            <li>
+              If it&rsquo;s a fit, we sign the service agreement and vet release
+              &mdash; about twenty minutes in total.
+            </li>
+            <li>
+              After that, booking your dates is just a text message.
+            </li>
+          </ol>
+          <p class="muted contact__steps-note">
+            Nothing is booked and no payment is due until after we&rsquo;ve met
+            in person.
+          </p>
+        </div>
+
+        <div class="contact__card contact__card--plain">
+          <h2 class="contact__card-title">Before you write</h2>
+          <p class="muted">
+            A few things that save us both a call: I look after{" "}
+            <strong>indoor cats only</strong>, I don&rsquo;t give{" "}
+            <strong>medication</strong> of any kind, I don&rsquo;t{" "}
+            <strong>board</strong>, and I don&rsquo;t travel more than{" "}
+            {site.pricing.maxRadiusMiles} miles from West Boca.
+          </p>
+          <p class="muted">
+            If any of that rules me out, do still get in touch &mdash; I&rsquo;m
+            glad to point you toward someone who can help.{" "}
+            <a href="/faq">More questions answered</a>.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact__layout {
+    display: grid;
+    gap: var(--sp-7);
+    align-items: start;
+  }
+
+  @media (min-width: 64em) {
+    .contact__layout {
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: var(--sp-8);
+    }
+  }
+
+  .contact__heading {
+    font-size: var(--fs-h2);
+  }
+
+  .contact__sub {
+    margin-top: var(--sp-2);
+    margin-bottom: var(--sp-6);
+  }
+
+  .contact__aside {
+    display: grid;
+    gap: var(--sp-4);
+  }
+
+  .contact__card {
+    padding: var(--sp-5);
+    background-color: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    display: grid;
+    gap: var(--sp-3);
+  }
+
+  .contact__card--soft {
+    background-color: var(--c-sage-soft);
+    border-color: color-mix(in srgb, var(--c-sage) 35%, transparent);
+  }
+
+  .contact__card--plain {
+    background-color: var(--c-blush-tint);
+    border-color: var(--c-blush-deep);
+  }
+
+  .contact__card-title {
+    font-size: var(--fs-h4);
+  }
+
+  .contact__vanity {
+    font-size: var(--fs-sm);
+    text-align: center;
+  }
+
+  .contact__details {
+    margin: 0;
+    padding-top: var(--sp-4);
+    border-top: 1px solid var(--c-border);
+    display: grid;
+    gap: var(--sp-3);
+  }
+
+  .contact__details dt {
+    font-size: var(--fs-sm);
+    color: var(--c-ink-muted);
+  }
+
+  .contact__details dd {
+    margin: 0;
+    font-weight: 600;
+    color: var(--c-plum);
+  }
+
+  .contact__steps {
+    margin: 0;
+    padding-left: 1.25em;
+    display: grid;
+    gap: var(--sp-2);
+  }
+
+  .contact__steps-note {
+    font-size: var(--fs-sm);
+  }
+</style>

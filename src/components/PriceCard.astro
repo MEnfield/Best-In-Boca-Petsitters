@@ -1,0 +1,214 @@
+---
+import { site } from "@/data/site";
+
+const { pricing } = site;
+
+/**
+ * Full transparency, deliberately.
+ *
+ * The surcharges could have been saved for the phone call. They’re on the page
+ * instead because every marketplace Holly competes with hides fees until
+ * checkout — being the sitter who tells you the real number up front is a
+ * differentiator, and a surprise at invoice time is the one thing that costs
+ * her a five-star review.
+ */
+const included = [
+  "Fresh water, food and treats if you allow them",
+  "Litter box scooped every visit",
+  "Real time spent with your cat, not a drive-by",
+  "Mail and packages brought in",
+  "Plants watered",
+  "Lights, blinds, TV or music adjusted so the house looks lived-in",
+  "A pair of eyes on the house while you’re gone",
+];
+
+const extras = [
+  {
+    label: `$${pricing.additionalCat} per visit`,
+    detail: "For each additional cat",
+  },
+  {
+    label: `$${pricing.holidaySurcharge} per visit`,
+    detail: "On major holidays",
+  },
+  {
+    label: `$${pricing.mileageSurcharge} per visit`,
+    detail: `If you’re more than ${pricing.freeRadiusMiles} miles from me in West Boca`,
+  },
+];
+---
+
+<div class="price">
+  <div class="price__main">
+    <p class="eyebrow">A visit to your home</p>
+    <p class="price__figure">
+      <span class="price__amount">${pricing.baseVisit}</span>
+      <span class="price__unit">per visit, one cat</span>
+    </p>
+    <p class="price__note muted">
+      No minimum number of visits. If you’re away for one night and want one
+      visit, that’s perfectly fine.
+    </p>
+
+    <h2 class="price__subhead">Every visit includes</h2>
+    <ul class="price__list">
+      {
+        included.map((item) => (
+          <li>
+            <svg
+              viewBox="0 0 20 20"
+              width="18"
+              height="18"
+              aria-hidden="true"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m4 10.5 4 4 8-9" />
+            </svg>
+            <span>{item}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <div class="price__extras">
+    <h2 class="price__subhead">Good to know</h2>
+    <dl class="price__extras-list">
+      {
+        extras.map((extra) => (
+          <div class="price__extra">
+            <dt>{extra.label}</dt>
+            <dd>{extra.detail}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <p class="price__pay muted">
+      Payment by {pricing.paymentMethods.slice(0, -1).join(", ")} or{" "}
+      {pricing.paymentMethods.at(-1)}, due at booking &mdash; after we’ve
+      already met in person. Larger requests beyond the everyday household
+      tasks are quoted before you book.
+    </p>
+  </div>
+</div>
+
+<style>
+  .price {
+    display: grid;
+    gap: var(--sp-5);
+    align-items: start;
+  }
+
+  @media (min-width: 56em) {
+    .price {
+      grid-template-columns: 1.35fr 1fr;
+      gap: var(--sp-6);
+    }
+  }
+
+  .price__main,
+  .price__extras {
+    background-color: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    padding: var(--sp-6);
+  }
+
+  .price__extras {
+    background-color: var(--c-blush-tint);
+    border-color: var(--c-blush-deep);
+  }
+
+  .price__figure {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+  }
+
+  .price__amount {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 40, "WONK" 1;
+    font-size: clamp(3rem, 2.2rem + 3vw, 4.25rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--c-plum);
+  }
+
+  .price__unit {
+    font-size: var(--fs-lg);
+    font-weight: 600;
+    color: var(--c-ink-muted);
+  }
+
+  .price__note {
+    margin-top: var(--sp-3);
+    max-width: 42ch;
+  }
+
+  /* These are <h2> rather than <h3> because the only heading above them on the
+     page is the <h1>; jumping straight to h3 skips a level and breaks the
+     document outline for screen-reader users navigating by heading. The size
+     is set here, so the level costs nothing visually. */
+  .price__subhead {
+    font-size: var(--fs-h4);
+    margin-top: var(--sp-6);
+    margin-bottom: var(--sp-3);
+  }
+
+  .price__extras .price__subhead {
+    margin-top: 0;
+  }
+
+  .price__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-3);
+  }
+
+  .price__list li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--sp-3);
+    align-items: start;
+  }
+
+  .price__list svg {
+    margin-top: 0.3em;
+    color: var(--c-sage-text);
+    flex-shrink: 0;
+  }
+
+  .price__extras-list {
+    margin: 0;
+    display: grid;
+    gap: var(--sp-4);
+  }
+
+  .price__extra dt {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 40, "WONK" 1;
+    font-size: var(--fs-h4);
+    font-weight: 600;
+    color: var(--c-plum);
+  }
+
+  .price__extra dd {
+    margin: 0;
+    color: var(--c-ink-muted);
+  }
+
+  .price__pay {
+    margin-top: var(--sp-5);
+    padding-top: var(--sp-4);
+    border-top: 1px solid var(--c-blush-deep);
+    font-size: var(--fs-sm);
+  }
+</style>

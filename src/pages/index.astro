@@ -1,0 +1,416 @@
+---
+import { Image } from "astro:assets";
+
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import TrustBar from "@/components/TrustBar.astro";
+import HowItWorks from "@/components/HowItWorks.astro";
+import ReviewCard from "@/components/ReviewCard.astro";
+import CatGallery from "@/components/CatGallery.astro";
+import FaqList from "@/components/FaqList.astro";
+import CtaBand from "@/components/CtaBand.astro";
+
+import { site } from "@/data/site";
+import { featuredReviews } from "@/data/reviews";
+import { featuredFaqs } from "@/data/faqs";
+import { heroImage } from "@/data/cats";
+
+const years = new Date().getFullYear() - site.foundedYear;
+
+/**
+ * The home page carries most of the Maps traffic, which arrives pre-sold and
+ * decides in roughly eight seconds. Above the fold it needs: who, what, where,
+ * how much, and the phone number.
+ */
+const title = `Cat Sitter in Boca Raton, FL | ${site.name}`;
+const description = `In-home cat sitting in West Boca Raton, Delray Beach and Deerfield Beach. $25 a visit, ${site.reviews.rating}★ across ${site.reviews.count} Google reviews, caring for local cats since ${site.foundedYear}. Free meet & greet — call ${site.phone.display}.`;
+---
+
+<BaseLayout title={title} description={description}>
+  <!-- ------------------------------------------------------------- Hero -->
+  <section class="hero">
+    <div class="container hero__inner">
+      <div class="hero__copy">
+        <p class="eyebrow">West Boca &middot; Delray Beach &middot; Deerfield Beach</p>
+        <h1 class="hero__title">
+          Your cat stays home. <span class="hero__em">I come to them.</span>
+        </h1>
+        <p class="lead hero__lead">
+          I&rsquo;m Holly, and I&rsquo;ve been looking after Boca Raton&rsquo;s
+          cats since {site.foundedYear}. Cats only &mdash; in their own home,
+          with their own things, and the same sitter every single visit.
+        </p>
+
+        <div class="hero__actions">
+          <a
+            href={site.phone.href}
+            class="btn btn--primary btn--lg"
+            data-track="tel"
+          >
+            Call {site.phone.display}
+          </a>
+          <a href="/contact" class="btn btn--secondary btn--lg">
+            Book a free meet &amp; greet
+          </a>
+        </div>
+
+        <p class="hero__meta muted">
+          <strong>${site.pricing.baseVisit} a visit.</strong> No obligation, and
+          nothing&rsquo;s booked until we&rsquo;ve met in person.
+        </p>
+      </div>
+
+      <div class="hero__media">
+        <Image
+          src={heroImage}
+          alt="A contented cat at home in Boca Raton, photographed during one of Holly’s visits"
+          widths={[480, 760, 1040]}
+          sizes="(min-width: 64em) 44vw, 92vw"
+          loading="eager"
+          fetchpriority="high"
+          class="hero__img"
+        />
+      </div>
+    </div>
+  </section>
+
+  <TrustBar />
+
+  <!-- --------------------------------------------- The photo-updates hook -->
+  <section class="section updates">
+    <div class="container updates__inner">
+      <div class="updates__copy">
+        <p class="eyebrow">While you&rsquo;re away</p>
+        <h2>You&rsquo;ll get a photo of your cat</h2>
+        <p class="lead">
+          It&rsquo;s the thing my clients mention most, and it&rsquo;s the
+          moment people tell me they finally stop worrying.
+        </p>
+        <p>
+          After each visit I&rsquo;ll text you a picture and a note &mdash; how
+          she ate, whether he came out from under the bed, anything at the
+          house you&rsquo;d want to know about. Some clients want that every
+          visit, some want one note a day, some would rather hear from me
+          weekly unless something needs them. You choose, and you can change
+          your mind whenever.
+        </p>
+        <p>
+          <a href="/faq#the-visits">More about how the visits work</a>
+        </p>
+      </div>
+
+      <figure class="updates__quote">
+        <blockquote>
+          <p>
+            &ldquo;We love that she sends us photos and updates about our babies
+            when we&rsquo;re away. She goes above and beyond to make it a good
+            experience for us and our pets.&rdquo;
+          </p>
+        </blockquote>
+        <figcaption>Jessica Hirsh &middot; Google review</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <HowItWorks />
+
+  <!-- ---------------------------------------------------------- Meet Holly -->
+  <section class="section section--tint meet">
+    <div class="container meet__inner">
+      <div class="meet__media">
+        {/*
+          PLACEHOLDER — swap for a real photograph of Holly before launch.
+          Put the file at src/assets/holly.jpg, import it, and render it with
+          <Image> so it gets optimised like the cat photos.
+        */}
+        <img
+          src="/holly-placeholder.svg"
+          alt="Holly Rising, owner of Best In Boca Pet Sitters"
+          width="520"
+          height="650"
+          class="meet__img"
+        />
+      </div>
+
+      <div class="meet__copy">
+        <p class="eyebrow">Who&rsquo;s coming to your house</p>
+        <h2>Twenty years, one sitter</h2>
+        <p class="lead">
+          I started Best In Boca Pet Sitters in {site.foundedYear}. {years} years
+          later, I&rsquo;m still the one who turns up.
+        </p>
+        <p>
+          There&rsquo;s no rota here and no app assigning you whoever&rsquo;s
+          free. You meet me, you book me, and I&rsquo;m the person your cat sees
+          every time. Some of the cats in the photographs below I&rsquo;ve known
+          since they were kittens.
+        </p>
+        <p>
+          Before your first visit we&rsquo;ll sign a service agreement and a
+          veterinary release, so if anything ever goes wrong there&rsquo;s no
+          scrambling for permission while you&rsquo;re on a plane.
+        </p>
+        <p>
+          <a href="/about" class="btn btn--ghost">More about me</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- Pricing -->
+  <section class="section pricing-teaser">
+    <div class="container">
+      <div class="pricing-teaser__head">
+        <p class="eyebrow">Straightforward pricing</p>
+        <h2>${site.pricing.baseVisit} a visit, and I&rsquo;ll tell you the rest up front</h2>
+        <p class="lead muted">
+          ${site.pricing.additionalCat} for each extra cat. ${site.pricing
+            .holidaySurcharge} a visit on major holidays. ${site.pricing
+            .mileageSurcharge} if you&rsquo;re more than {site.pricing
+            .freeRadiusMiles} miles from me. Mail, plants and small household
+          tasks are included.
+        </p>
+        <p>
+          <a href="/cat-sitting" class="btn btn--secondary">
+            See everything that&rsquo;s included
+          </a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- Reviews -->
+  <section class="section section--tint">
+    <div class="container">
+      <div class="reviews-teaser__head">
+        <p class="eyebrow">{site.reviews.rating} stars &middot; {site.reviews.count} reviews</p>
+        <h2>What my clients say</h2>
+      </div>
+
+      <div class="grid grid--3">
+        {featuredReviews.map((review) => <ReviewCard review={review} truncate />)}
+      </div>
+
+      <p class="reviews-teaser__more">
+        <a href="/reviews" class="btn btn--secondary">Read more reviews</a>
+      </p>
+    </div>
+  </section>
+
+  <CatGallery limit={10} />
+
+  <!-- ----------------------------------------------------------------- FAQ -->
+  <section class="section">
+    <div class="container container--narrow">
+      <div class="faq-teaser__head">
+        <p class="eyebrow">Before you call</p>
+        <h2>The things people ask me</h2>
+      </div>
+
+      <FaqList items={featuredFaqs} />
+
+      <p class="faq-teaser__more">
+        <a href="/faq" class="btn btn--secondary">All questions answered</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- --------------------------------------------------------------- Areas -->
+  <section class="section section--sage areas">
+    <div class="container container--narrow text-center">
+      <p class="eyebrow">Where I go</p>
+      <h2>Serving West Boca, Delray Beach and Deerfield Beach</h2>
+      <p class="lead">
+        Including {site.neighborhoods.slice(0, -1).join(", ")} and {site
+          .neighborhoods.at(-1)}. There&rsquo;s no travel charge within{" "}
+        {site.pricing.freeRadiusMiles} miles of me in West Boca, and I
+        don&rsquo;t travel more than {site.pricing.maxRadiusMiles} miles out.
+      </p>
+      <p class="muted areas__why">
+        That limit isn&rsquo;t fussiness &mdash; past ten miles I can&rsquo;t
+        promise I&rsquo;d reach your cat quickly if something went wrong, and
+        that&rsquo;s the whole point of hiring me.
+      </p>
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  /* ----------------------------------------------------------------- Hero */
+
+  .hero {
+    padding-block: var(--sp-7) var(--sp-8);
+    background:
+      radial-gradient(
+        ellipse 80% 60% at 15% 0%,
+        var(--c-blush-tint) 0%,
+        transparent 70%
+      ),
+      var(--c-cream);
+  }
+
+  .hero__inner {
+    display: grid;
+    gap: var(--sp-6);
+    align-items: center;
+  }
+
+  @media (min-width: 64em) {
+    .hero__inner {
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: var(--sp-8);
+    }
+  }
+
+  .hero__title {
+    font-size: var(--fs-display);
+    max-width: 14ch;
+  }
+
+  .hero__em {
+    display: block;
+    color: var(--c-rose);
+  }
+
+  .hero__lead {
+    margin-top: var(--sp-4);
+    max-width: 48ch;
+  }
+
+  .hero__actions {
+    margin-top: var(--sp-6);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    max-width: 32rem;
+  }
+
+  /* Share the row evenly when both fit, go full width each when they don’t.
+     Without this the two buttons wrap to mismatched widths, which reads as an
+     accident rather than a pair. */
+  .hero__actions .btn {
+    flex: 1 1 14rem;
+  }
+
+  .hero__meta {
+    margin-top: var(--sp-4);
+    font-size: var(--fs-sm);
+  }
+
+  .hero__img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--r-xl);
+  }
+
+  /* -------------------------------------------------------------- Updates */
+
+  .updates__inner {
+    display: grid;
+    gap: var(--sp-6);
+    align-items: center;
+  }
+
+  @media (min-width: 56em) {
+    .updates__inner {
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: var(--sp-8);
+    }
+  }
+
+  .updates__copy > * + * {
+    margin-top: var(--sp-4);
+  }
+
+  .updates__copy p:not(.eyebrow) {
+    max-width: 56ch;
+  }
+
+  .updates__quote {
+    margin: 0;
+    padding: var(--sp-6);
+    background-color: var(--c-blush-tint);
+    border-left: 4px solid var(--c-rose);
+    border-radius: var(--r-md);
+  }
+
+  .updates__quote blockquote {
+    margin: 0;
+  }
+
+  .updates__quote p {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 40, "WONK" 1;
+    font-size: var(--fs-h4);
+    line-height: 1.45;
+    color: var(--c-plum);
+  }
+
+  .updates__quote figcaption {
+    margin-top: var(--sp-4);
+    font-size: var(--fs-sm);
+    color: var(--c-ink-muted);
+  }
+
+  /* ------------------------------------------------------------ Meet Holly */
+
+  .meet__inner {
+    display: grid;
+    gap: var(--sp-6);
+    align-items: center;
+  }
+
+  @media (min-width: 56em) {
+    .meet__inner {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: var(--sp-8);
+    }
+  }
+
+  .meet__img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--r-xl);
+  }
+
+  .meet__copy > * + * {
+    margin-top: var(--sp-4);
+  }
+
+  .meet__copy p:not(.eyebrow) {
+    max-width: 54ch;
+  }
+
+  /* ---------------------------------------------------- Teasers and areas */
+
+  .pricing-teaser__head,
+  .reviews-teaser__head,
+  .faq-teaser__head {
+    max-width: 52ch;
+    margin-bottom: var(--sp-6);
+  }
+
+  .pricing-teaser__head > * + * {
+    margin-top: var(--sp-4);
+  }
+
+  .reviews-teaser__more,
+  .faq-teaser__more {
+    margin-top: var(--sp-6);
+  }
+
+  .areas .lead {
+    margin-top: var(--sp-4);
+    margin-inline: auto;
+    max-width: 58ch;
+  }
+
+  .areas__why {
+    margin-top: var(--sp-4);
+    margin-inline: auto;
+    max-width: 52ch;
+    font-size: var(--fs-sm);
+  }
+</style>

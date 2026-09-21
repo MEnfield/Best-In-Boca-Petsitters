@@ -1,0 +1,9 @@
+# Best In Boca Pet Sitters
+User-agent: *
+Allow: /
+
+# Synthetic URLs pushed by the analytics conversion tracker. They are never
+# served and must never be indexed.
+Disallow: /event/
+
+Sitemap: https://www.bocapetsitting.com/sitemap-index.xml

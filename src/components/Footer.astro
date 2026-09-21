@@ -1,0 +1,142 @@
+---
+import { site } from "@/data/site";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <p class="site-footer__name">{site.name}</p>
+        <p class="site-footer__tag">
+          In-home cat sitting in West Boca Raton, Delray Beach and Deerfield
+          Beach. Caring for local cats since {site.foundedYear}.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="site-footer__heading">Get in touch</h2>
+        <ul class="site-footer__list">
+          <li>
+            <a href={site.phone.href} class="site-footer__phone" data-track="tel">
+              {site.phone.display}
+            </a>
+            <span class="site-footer__vanity">{site.phone.vanity}</span>
+          </li>
+          <li><a href={site.email.href}>{site.email.address}</a></li>
+          <li class="muted">{site.hours.display}</li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="site-footer__heading">Pages</h2>
+        <ul class="site-footer__list">
+          <li><a href="/about">About Holly</a></li>
+          <li><a href="/cat-sitting">Cat sitting &amp; prices</a></li>
+          <li><a href="/snowbird-cat-care">Snowbird &amp; long-trip care</a></li>
+          <li><a href="/reviews">Reviews</a></li>
+          <li><a href="/faq">Questions</a></li>
+          <li><a href="/contact">Book a meet &amp; greet</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="site-footer__heading">Areas served</h2>
+        <ul class="site-footer__list">
+          {site.serviceAreas.map((area) => <li class="muted">{area}</li>)}
+        </ul>
+      </div>
+    </div>
+
+    <p class="site-footer__legal">
+      &copy; {year} {site.name}. Cats only, indoor only, in their own home.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: auto;
+    padding-block: var(--sp-8) var(--sp-6);
+    background-color: var(--c-blush-tint);
+    border-top: 1px solid var(--c-border);
+    /* Clear the sticky mobile call bar. */
+    padding-bottom: calc(var(--sp-6) + var(--callbar-h));
+  }
+
+  @media (min-width: 48em) {
+    .site-footer {
+      padding-bottom: var(--sp-6);
+    }
+  }
+
+  .site-footer__grid {
+    display: grid;
+    gap: var(--sp-6);
+  }
+
+  @media (min-width: 40em) {
+    .site-footer__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 64em) {
+    .site-footer__grid {
+      grid-template-columns: 1.6fr 1fr 1fr 1fr;
+      gap: var(--sp-7);
+    }
+  }
+
+  .site-footer__name {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 40, "WONK" 1;
+    font-size: var(--fs-h4);
+    font-weight: 600;
+    color: var(--c-plum);
+  }
+
+  .site-footer__tag {
+    margin-top: var(--sp-2);
+    color: var(--c-ink-muted);
+    max-width: 34ch;
+  }
+
+  .site-footer__heading {
+    font-family: var(--font-body);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-sage-text);
+    margin-bottom: var(--sp-3);
+  }
+
+  .site-footer__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-2);
+  }
+
+  .site-footer__phone {
+    font-weight: 700;
+    font-size: var(--fs-lg);
+  }
+
+  .site-footer__vanity {
+    display: block;
+    font-size: var(--fs-sm);
+    color: var(--c-ink-muted);
+  }
+
+  .site-footer__legal {
+    margin-top: var(--sp-7);
+    padding-top: var(--sp-5);
+    border-top: 1px solid var(--c-border);
+    font-size: var(--fs-sm);
+    color: var(--c-ink-muted);
+  }
+</style>

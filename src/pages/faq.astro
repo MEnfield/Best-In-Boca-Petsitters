@@ -1,0 +1,165 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageHeader from "@/components/PageHeader.astro";
+import FaqList from "@/components/FaqList.astro";
+import CtaBand from "@/components/CtaBand.astro";
+
+import { site } from "@/data/site";
+import { faqs, faqsByCategory } from "@/data/faqs";
+
+const title = `Questions About Cat Sitting in Boca Raton | ${site.name}`;
+const description = `How Holly gets in, what happens in an emergency, whether she gives medication, how photo updates work, what it costs and how far she travels. Straight answers before you call.`;
+
+/** Anchors let the home page and other pages deep-link into a category. */
+const slug = (value: string) =>
+  value.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question.replace(/&amp;/g, "&").replace(/<[^>]+>/g, ""),
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
+    },
+  })),
+};
+---
+
+<BaseLayout title={title} description={description} schema={faqSchema}>
+  <PageHeader
+    eyebrow="Questions"
+    title="Everything people ask me before they call"
+    lead="If something isn’t answered here, ring me and ask — I’d much rather tell you now than have it come up at your front door."
+  />
+
+  <section class="section faq-page">
+    <div class="container faq-page__layout">
+      <nav class="faq-page__nav" aria-label="Question categories">
+        <h2 class="faq-page__nav-title">Jump to</h2>
+        <ul>
+          {
+            faqsByCategory.map(({ category, items }) => (
+              <li>
+                <a href={`#${slug(category)}`}>
+                  {category} <span class="faq-page__count">{items.length}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+
+        <div class="faq-page__aside">
+          <p class="muted">Still not sure?</p>
+          <a
+            href={site.phone.href}
+            class="btn btn--primary btn--block"
+            data-track="tel"
+          >
+            Call {site.phone.display}
+          </a>
+        </div>
+      </nav>
+
+      <div class="faq-page__body">
+        {
+          faqsByCategory.map(({ category, items }) => (
+            <section class="faq-page__group" id={slug(category)}>
+              <h2 class="faq-page__group-title">{category}</h2>
+              <FaqList items={items} />
+            </section>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .faq-page__layout {
+    display: grid;
+    gap: var(--sp-6);
+    align-items: start;
+  }
+
+  @media (min-width: 64em) {
+    .faq-page__layout {
+      grid-template-columns: 16rem 1fr;
+      gap: var(--sp-8);
+    }
+
+    .faq-page__nav {
+      position: sticky;
+      top: 6rem;
+    }
+  }
+
+  .faq-page__nav-title {
+    font-family: var(--font-body);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-sage-text);
+    margin-bottom: var(--sp-3);
+  }
+
+  .faq-page__nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-1);
+  }
+
+  /* Scoped to the list deliberately. A bare `.faq-page__nav a` also matches the
+     "Call" button in the aside below — and because .btn lives in @layer
+     components while this page style is unlayered, the page rule wins and
+     repaints the button's white text plum-on-plum at 2.17:1. */
+  .faq-page__nav ul a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    min-height: 2.75rem;
+    padding: var(--sp-2) var(--sp-3);
+    border-radius: var(--r-md);
+    text-decoration: none;
+    font-weight: 600;
+    color: var(--c-plum);
+  }
+
+  .faq-page__nav ul a:hover {
+    background-color: var(--c-blush-tint);
+    color: var(--c-rose);
+  }
+
+  .faq-page__count {
+    font-size: var(--fs-sm);
+    font-weight: 400;
+    color: var(--c-ink-muted);
+  }
+
+  .faq-page__aside {
+    margin-top: var(--sp-5);
+    padding-top: var(--sp-5);
+    border-top: 1px solid var(--c-border);
+    display: grid;
+    gap: var(--sp-3);
+  }
+
+  .faq-page__body {
+    display: grid;
+    gap: var(--sp-7);
+  }
+
+  .faq-page__group-title {
+    margin-bottom: var(--sp-4);
+    padding-bottom: var(--sp-3);
+    border-bottom: 2px solid var(--c-blush-deep);
+  }
+</style>

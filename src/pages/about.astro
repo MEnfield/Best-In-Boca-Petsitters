@@ -1,0 +1,219 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageHeader from "@/components/PageHeader.astro";
+import CtaBand from "@/components/CtaBand.astro";
+import ReviewCard from "@/components/ReviewCard.astro";
+
+import { site } from "@/data/site";
+import { publishedReviews } from "@/data/reviews";
+
+const years = new Date().getFullYear() - site.foundedYear;
+
+/**
+ * The trust page. For a service where a stranger holds your house key, this is
+ * usually the second page someone opens, and it is where the decision is
+ * actually made.
+ */
+const title = `About Holly Rising | Cat Sitter in Boca Raton Since ${site.foundedYear}`;
+const description = `Holly Rising has been caring for cats in West Boca Raton, Delray Beach and Deerfield Beach since ${site.foundedYear}. One sitter, cats only, in your own home. ${site.reviews.rating}★ across ${site.reviews.count} Google reviews.`;
+
+const longTenure = publishedReviews.filter((r) => r.tenure).slice(0, 2);
+---
+
+<BaseLayout title={title} description={description}>
+  <PageHeader
+    eyebrow="About"
+    title="I’m Holly, and I’ve been doing this a long time"
+    lead={`I started Best In Boca Pet Sitters in ${site.foundedYear}. ${years} years later I’m still the one who turns up at your door.`}
+  />
+
+  <section class="section">
+    <div class="container about__grid">
+      <div class="about__media">
+        {/*
+          PLACEHOLDER — replace with a real photograph of Holly before launch.
+          Put it at src/assets/holly.jpg and render with <Image>.
+        */}
+        <img
+          src="/holly-placeholder.svg"
+          alt="Holly Rising, owner of Best In Boca Pet Sitters"
+          width="520"
+          height="650"
+          class="about__img"
+        />
+
+        <aside class="about__facts">
+          <h2 class="about__facts-title">At a glance</h2>
+          <dl>
+            <div><dt>Started</dt><dd>{site.foundedYear}</dd></div>
+            <div><dt>Specialty</dt><dd>Indoor cats, in their own home</dd></div>
+            <div><dt>Areas</dt><dd>{site.serviceAreas.join(", ")}</dd></div>
+            <div><dt>Reviews</dt><dd>{site.reviews.rating}★ from {site.reviews.count} on Google</dd></div>
+            <div><dt>Paperwork</dt><dd>Service agreement &amp; vet release</dd></div>
+          </dl>
+        </aside>
+      </div>
+
+      <div class="about__copy prose">
+        <h2>Why cats only</h2>
+        <p>
+          For years I looked after everything &mdash; dogs, cats, the lot. These
+          days I take cats and nothing else, and it&rsquo;s made me much better
+          at the job.
+        </p>
+        <p>
+          Cats are easy to get wrong. People assume they&rsquo;re fine on their
+          own for a few days, and mostly they are, right up until they
+          aren&rsquo;t. A cat who stops eating on day two, a litter box that
+          tells you something&rsquo;s wrong, the one who hides for the first
+          three visits and then decides you&rsquo;re acceptable &mdash; you only
+          learn to read that by doing it several thousand times. Narrowing down
+          to cats means every visit I make builds on the last one.
+        </p>
+
+        <h2>Why I don&rsquo;t board</h2>
+        <p>
+          I don&rsquo;t take cats into my home, and I wouldn&rsquo;t want to.
+          Cats are territorial. Nearly all of them do better in their own house,
+          with their own smells and their own windows and the same spot on the
+          sofa, than in a strange place surrounded by strange animals. They love
+          their own home best.
+        </p>
+        <p>
+          There&rsquo;s a practical benefit too: because I&rsquo;m coming to your
+          house anyway, you also get someone walking through it while
+          you&rsquo;re away. I&rsquo;ll bring in the mail so it isn&rsquo;t
+          piling up in view, water the plants, and move the lights and blinds
+          around so the place looks lived-in. Over twenty years I&rsquo;ve found
+          leaks, failed air conditioning, and a few things a burglar would have
+          been glad to find first.
+        </p>
+
+        <h2>The same person, every time</h2>
+        <p>
+          There&rsquo;s no rota here and no app assigning you whoever&rsquo;s
+          available. You meet me, you book me, and I&rsquo;m the one your cat
+          sees. Some of my clients have been with me for ten years. Some of the
+          cats I&rsquo;ve known since they were kittens.
+        </p>
+        <p>
+          That&rsquo;s the part the big platforms can&rsquo;t do, and
+          it&rsquo;s the part that matters when your cat is shy, or elderly, or
+          takes three visits to come out from under the bed.
+        </p>
+
+        <h2>What I don&rsquo;t do</h2>
+        <p>
+          I&rsquo;d rather be straight with you now than at your front door. I
+          don&rsquo;t administer medication of any kind. I don&rsquo;t care for
+          outdoor cats, because I can&rsquo;t do the job properly if I
+          can&rsquo;t reliably find them. And I don&rsquo;t take on cats who are
+          seriously ill or near the end of their lives &mdash; they deserve
+          someone with medical training, and pretending otherwise
+          wouldn&rsquo;t be fair to them.
+        </p>
+        <p>
+          If any of that rules me out, please still call. I know the people in
+          this area and I&rsquo;m glad to point you toward the right kind of
+          help.
+        </p>
+
+        <h2>Before your first visit</h2>
+        <p>
+          We&rsquo;ll meet at your house, free of charge, so you can see how I
+          am with your cat and I can learn their routine. We&rsquo;ll sign a
+          service agreement and a veterinary release &mdash; the release is what
+          lets me get your cat to a vet quickly if it&rsquo;s ever needed,
+          rather than waiting to track you down while you&rsquo;re on a plane.
+        </p>
+        <p>
+          It takes about twenty minutes, and in my experience it&rsquo;s the
+          twenty minutes that lets everyone stop worrying.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tint">
+    <div class="container">
+      <h2 class="about__reviews-title">People who&rsquo;ve stayed a while</h2>
+      <div class="grid grid--2">
+        {longTenure.map((review) => <ReviewCard review={review} truncate />)}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Come and meet me"
+    body="The first visit is free and nothing’s booked until we’ve met. Call, or send a few details and I’ll be in touch."
+  />
+</BaseLayout>
+
+<style>
+  .about__grid {
+    display: grid;
+    gap: var(--sp-7);
+    align-items: start;
+  }
+
+  @media (min-width: 64em) {
+    .about__grid {
+      grid-template-columns: 0.75fr 1.25fr;
+      gap: var(--sp-8);
+    }
+
+    .about__media {
+      position: sticky;
+      top: 6rem;
+    }
+  }
+
+  .about__img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--r-xl);
+  }
+
+  .about__facts {
+    margin-top: var(--sp-5);
+    padding: var(--sp-5);
+    background-color: var(--c-blush-tint);
+    border: 1px solid var(--c-blush-deep);
+    border-radius: var(--r-lg);
+  }
+
+  .about__facts-title {
+    font-family: var(--font-body);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-sage-text);
+    margin-bottom: var(--sp-4);
+  }
+
+  .about__facts dl {
+    margin: 0;
+    display: grid;
+    gap: var(--sp-3);
+  }
+
+  .about__facts dt {
+    font-size: var(--fs-sm);
+    color: var(--c-ink-muted);
+  }
+
+  .about__facts dd {
+    margin: 0;
+    font-weight: 600;
+    color: var(--c-plum);
+  }
+
+  .about__copy p {
+    max-width: 66ch;
+  }
+
+  .about__reviews-title {
+    margin-bottom: var(--sp-6);
+  }
+</style>

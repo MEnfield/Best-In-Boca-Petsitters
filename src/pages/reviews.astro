@@ -1,0 +1,86 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageHeader from "@/components/PageHeader.astro";
+import ReviewCard from "@/components/ReviewCard.astro";
+import CtaBand from "@/components/CtaBand.astro";
+
+import { site } from "@/data/site";
+import { publishedReviews } from "@/data/reviews";
+
+const title = `Reviews | ${site.name}, Boca Raton Cat Sitter`;
+const description = `${site.reviews.rating} stars from ${site.reviews.count} Google reviews. What Holly’s clients in West Boca Raton, Delray Beach and Deerfield Beach say about her cat sitting.`;
+---
+
+<BaseLayout title={title} description={description}>
+  <PageHeader
+    eyebrow={`${site.reviews.rating} stars · ${site.reviews.count} reviews`}
+    title="What my clients say"
+    lead="These are reproduced from my Google listing, word for word, including the typos. I’ve corrected nothing."
+  />
+
+  <section class="section reviews">
+    <div class="container">
+      <p class="reviews__source">
+        <a href={site.reviews.googleUrl} rel="noopener">
+          See all {site.reviews.count} reviews on Google →
+        </a>
+      </p>
+
+      <ul class="reviews__grid">
+        {
+          publishedReviews.map((review) => (
+            <li>
+              <ReviewCard review={review} />
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="reviews__note muted">
+        Reviews are reproduced from my Google Business Profile with the
+        reviewers&rsquo; names as they appear there.
+      </p>
+    </div>
+  </section>
+
+  <CtaBand
+    heading="Want to be the next one?"
+    body="The meet & greet is free. Call me, or send a few details and I’ll be in touch."
+  />
+</BaseLayout>
+
+<style>
+  .reviews__source {
+    margin-bottom: var(--sp-6);
+    font-weight: 600;
+  }
+
+  .reviews__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-5);
+  }
+
+  @media (min-width: 48em) {
+    .reviews__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 72em) {
+    .reviews__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .reviews__grid > li {
+    display: flex;
+  }
+
+  .reviews__note {
+    margin-top: var(--sp-7);
+    font-size: var(--fs-sm);
+  }
+</style>

@@ -1,0 +1,13 @@
+# Cloudflare Pages redirects.
+#
+# /testimonials is the only other URL indexed from the old Wix site and it is
+# linked from her home page, so it must not 404 at cutover.
+/testimonials       /reviews        301
+/testimonials/      /reviews        301
+
+# Likely hand-typed or externally linked variants.
+/about-us           /about          301
+/prices             /cat-sitting    301
+/pricing            /cat-sitting    301
+/services           /cat-sitting    301
+/contact-us         /contact        301

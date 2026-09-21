@@ -13,7 +13,7 @@ In-home cat sitting in West Boca Raton, Delray Beach and Deerfield Beach.
 | | |
 | --- | --- |
 | Phone | (561) 674-2378 — also (561) 674-BEST |
-| Email | SHJRising@gmail.com |
+| Email | SHJRising@aol.com |
 | Hours | 9:00 AM – 8:00 PM, seven days |
 | Reviews | 4.9★ from 31 on Google |
 | Price | $25/visit (1 cat) · +$5 per extra cat · +$10 major holidays · +$10 beyond 5 miles |

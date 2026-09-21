@@ -20,6 +20,8 @@ interface Props {
   accessKey: string;
   phoneDisplay: string;
   phoneHref: string;
+  /** Passed in from site.ts rather than hardcoded — one source of truth. */
+  email: string;
 }
 
 type Status = "idle" | "submitting" | "success" | "error";
@@ -34,6 +36,7 @@ export default function ContactForm({
   accessKey,
   phoneDisplay,
   phoneHref,
+  email: contactEmail,
 }: Props) {
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<Errors>({});
@@ -312,8 +315,7 @@ export default function ContactForm({
             <a href={phoneHref} data-track="tel">
               {phoneDisplay}
             </a>
-            , or email{" "}
-            <a href="mailto:SHJRising@gmail.com">SHJRising@gmail.com</a>.
+            , or email <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.
           </p>
         </div>
       )}

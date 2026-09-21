@@ -31,8 +31,8 @@ export const site = {
   },
 
   email: {
-    address: "SHJRising@gmail.com",
-    href: "mailto:SHJRising@gmail.com",
+    address: "SHJRising@aol.com",
+    href: "mailto:SHJRising@aol.com",
   },
 
   /**

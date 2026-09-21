@@ -32,7 +32,7 @@ are downloaded before anything touches the Wix account.
 
 ## 2. Create a Web3Forms access key
 
-1. Go to <https://web3forms.com>, enter `SHJRising@gmail.com`, and get the
+1. Go to <https://web3forms.com>, enter `SHJRising@aol.com`, and get the
    access key emailed to you.
 2. **If it asks for a website URL, use `https://www.bocapetsitting.com`** — the
    production domain, not the `.pages.dev` one. The field is informational: the
@@ -149,10 +149,10 @@ Email routing requires Cloudflare to be authoritative, so the nameservers move.
 
 Cloudflare → **Email** → **Email Routing** → enable, then create:
 
-`holly@bocapetsitting.com` → forwards to `SHJRising@gmail.com`
+`holly@bocapetsitting.com` → forwards to `SHJRising@aol.com`
 
-A business-domain address reads more established than a Gmail address on a
-public page. Once it's working and verified, update `src/data/site.ts`:
+A business-domain address reads more established than a generic webmail one on
+a public page. Once it's working and verified, update `src/data/site.ts`:
 
 ```ts
 email: {
@@ -161,7 +161,7 @@ email: {
 },
 ```
 
-and the fallback address in `src/components/ContactForm.tsx`.
+That is the only place to change it — every other use reads from there.
 
 ## 11. Verify the redirects
 

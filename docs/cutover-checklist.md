@@ -35,10 +35,10 @@ are downloaded before anything touches the Wix account.
 1. Go to <https://web3forms.com>, enter `SHJRising@aol.com`, and get the
    access key emailed to you.
 2. **If it asks for a website URL, use `https://www.bocapetsitting.com`** — the
-   production domain, not the `.pages.dev` one. The field is informational: the
+   production domain, not the deployed `.workers.dev` one. The field is informational: the
    access key is bound to the *email address*, not the domain ("an alias to
    your email", per their docs), and **domain restriction is a Pro feature**.
-   So the key will keep working from the `.pages.dev` preview URL at step 7,
+   So the key will keep working from the `.workers.dev` preview URL at step 7,
    which is what you'll be testing against before DNS cutover.
 3. In the Web3Forms dashboard, add **your own email as a CC recipient** so you
    can see whether the site is actually producing leads for the first few
@@ -56,9 +56,16 @@ cd C:/Users/Mitch/Documents/GitRepos/Best-In-Boca-Petsitters
 git push -u origin main
 ```
 
-## 4. Create the Cloudflare Pages project
+## 4. Create the Cloudflare project
 
-Cloudflare dashboard → **Workers & Pages** → **Create** → **Pages** →
+> **What actually happened (2026-09-21):** Cloudflare now routes new Git
+> projects into **Workers Builds**, not Pages. So this deployed as a *Worker*
+> serving static assets, and the live URL is
+> **<https://best-in-boca-petsitters.mitchenfield.workers.dev>** — which is why
+> no "Visit site" button appears anywhere in the Pages section. The site works
+> correctly there; see "Known issues with the Workers deploy" below.
+
+Cloudflare dashboard → **Compute (Workers & Pages)** → **Create** →
 **Connect to Git** → pick `MEnfield/Best-In-Boca-Petsitters`.
 
 Build settings:
@@ -69,6 +76,22 @@ Build settings:
 | Build command | `pnpm build` |
 | Build output directory | `dist` |
 | Node version | `22` (set env var `NODE_VERSION` = `22`) |
+
+### Known issues with the Workers deploy
+
+Both found on the first build. Neither breaks the site; both should be fixed
+before the custom domain goes on at step 9.
+
+1. **The build mutates `astro.config.mjs` on every run.** Because the repo has
+   no `wrangler` config, `wrangler deploy` runs `astro add cloudflare`, adds the
+   SSR adapter, and **rebuilds the whole site a second time** as a server
+   Worker. We want plain static assets. The fix is to commit a `wrangler.jsonc`
+   declaring an assets-only deploy, which stops the auto-configuration.
+2. **Every page except `/` 307-redirects to a trailing slash** (`/faq` →
+   `/faq/`). Our canonical tags and sitemap both say `/faq`, so every sitemap
+   URL currently costs a redirect hop. Cloudflare's asset server defaults to
+   `html_handling: "auto-trailing-slash"`; setting `drop-trailing-slash` in the
+   same `wrangler.jsonc` resolves it.
 
 ## 5. Set environment variables
 
@@ -104,7 +127,7 @@ answer "did the website work?".
 
 ## 7. Test the preview URL
 
-Cloudflare gives you `<project>.pages.dev`. Check on a real phone:
+Open the deployed URL (`<project>.<account>.workers.dev`) on a real phone:
 
 - [ ] Tapping the sticky bottom bar opens the dialer with **(561) 674-2378**
 - [ ] The contact form submits and Holly **and you** both receive the email
@@ -114,7 +137,7 @@ Cloudflare gives you `<project>.pages.dev`. Check on a real phone:
 
 ## 8. **[Holly] Review**
 
-Send her the `.pages.dev` link and ask her to read it **on her own phone**.
+Send her the `.workers.dev` link and ask her to read it **on her own phone**.
 Specifically ask her to check:
 
 - [ ] Every price is right ($25, +$5 per cat, +$10 holidays, +$10 over 5 miles)
@@ -128,31 +151,101 @@ Specifically ask her to check:
 **Do not proceed past this point until she's said yes.** Her phone number and
 twenty-year reputation are on this.
 
-## 9. DNS
+## 9. DNS — read this before touching anything
 
-Email routing requires Cloudflare to be authoritative, so the nameservers move.
-**The domain stays registered at GoDaddy** — only the nameservers change.
+**Correction to an earlier assumption: the domain is not at GoDaddy.** Looked up
+2026-09-21 via RDAP and live DNS:
+
+| | |
+| --- | --- |
+| Registrar | **DNC Holdings, Inc.** — the registrar Wix resells through |
+| Nameservers | `NS1.WIX.COM`, `NS2.WIX.COM` |
+| Registered | 2006-08-06 (last changed 2021-08-30) |
+| Expires | 2030-08-06 |
+
+So the domain was bought **through Wix** and Wix is authoritative for DNS. This
+has two consequences that matter.
+
+### 9a. There is live mail routing on this domain
+
+```
+MX     bocapetsitting.com          10 a-69-5-72-123.bocapetsitting.com
+A      a-69-5-72-123...            69.5.72.123
+CNAME  mail.bocapetsitting.com  -> a-69-5-72-123.bocapetsitting.com
+```
+
+That is a working mail-forwarding setup. **If you move nameservers and don't
+recreate this, every email sent to anything@bocapetsitting.com stops arriving,
+silently.**
+
+- [ ] **[Holly] Ask her whether she uses any @bocapetsitting.com address.** She
+      gave us an AOL address for the site, so it may be vestigial — but "may be"
+      isn't good enough to break someone's email on.
+- [ ] If she does use it, recreate the MX and CNAME above in Cloudflare exactly,
+      **or** set up Cloudflare Email Routing to forward that address to her AOL
+      inbox instead (step 10), which is cleaner.
+- [ ] There are **no TXT or SPF records**, so nothing else to carry across.
+
+For reference, the records being replaced:
+
+```
+A      bocapetsitting.com       185.230.63.171 / .107 / .186   (Wix)
+CNAME  www.bocapetsitting.com   cdn1.wixdns.net                (Wix CDN)
+```
+
+### 9b. The domain and the Wix site plan are separate subscriptions
+
+**Do not assume cancelling Wix hosting is safe for the domain.** On Wix these
+are billed separately, and a domain bought through them can be bundled with a
+Premium plan voucher.
+
+- [ ] In **Wix → Billing & Payments → Subscriptions**, list what she actually
+      pays for. Expect two lines: a Premium site plan and a domain. Screenshot
+      it before changing anything.
+- [ ] Confirm the domain has **auto-renew on**. It's paid to 2030 at the
+      registry, but the Wix-side renewal is what keeps it hers.
+
+### 9c. Point DNS at Cloudflare
+
+Two routes. **Take option A** — it's reversible and doesn't touch registration.
+
+**Option A — change nameservers, leave the domain registered at Wix (recommended)**
 
 1. Cloudflare → **Add a site** → `bocapetsitting.com` → Free plan.
-2. Cloudflare scans the existing records. **Check the list before continuing** —
-   if Holly has any email or other services on this domain, those records must
-   carry over or they'll break.
-3. Cloudflare gives you two nameservers. In **GoDaddy → Domain settings →
-   Nameservers → Change → Enter my own**, replace both.
-4. Wait for Cloudflare to report the site as Active (usually minutes, up to 24h).
-5. Pages project → **Custom domains** → add `www.bocapetsitting.com` **and**
-   `bocapetsitting.com`.
-6. Set the apex to redirect to `www` — www is the version Google has indexed
-   for years, so it stays canonical.
+2. Cloudflare scans existing records. **Check that the MX from 9a came across.**
+   Add it by hand if not.
+3. Cloudflare gives you two nameservers. In **Wix → Domains → your domain →
+   Advanced → Nameservers**, switch to "Use external nameservers" and enter
+   Cloudflare's.
+4. Wait for Cloudflare to report the site **Active** (usually minutes, up to 24h).
+5. In the Worker project → **Settings → Domains & Routes** → add
+   `www.bocapetsitting.com` **and** `bocapetsitting.com`.
+6. Redirect the apex to `www` — www is what Google has indexed for years, so it
+   stays canonical.
 
-## 10. Email forwarding (free, and worth doing)
+**Option B — transfer the domain to Cloudflare Registrar (later, optional)**
+
+Cheaper (~$10/yr at cost, no markup) and consolidates everything in one place.
+But it needs an unlock plus auth code from Wix, takes up to 7 days, and there's
+a 60-day lock after any registrant change. **Don't do this during launch.** It's
+a good tidy-up once the site has been live and stable for a month.
+
+## 10. Email forwarding (free, and it may also solve 9a)
 
 Cloudflare → **Email** → **Email Routing** → enable, then create:
 
 `holly@bocapetsitting.com` → forwards to `SHJRising@aol.com`
 
 A business-domain address reads more established than a generic webmail one on
-a public page. Once it's working and verified, update `src/data/site.ts`:
+a public page. If Holly *was* using an @bocapetsitting.com address via the old
+MX, recreate that same address here — Email Routing replaces the old forwarding
+entirely, and does it for free.
+
+> Enabling Email Routing **replaces the MX records** on the domain. That is
+> fine, and is the intended outcome — but it is also why 9a has to be answered
+> first. Find out what the old MX was doing before you overwrite it.
+
+Once it's working and verified, update `src/data/site.ts`:
 
 ```ts
 email: {
@@ -219,8 +312,13 @@ Confirm first:
 - [ ] Both missing cat photos are downloaded
 - [ ] Search Console shows the sitemap as read
 
-Then cancel the Wix premium plan. That's **$200–350/year** back, which more
-than covers the pet-sitter liability insurance discussed below.
+Then cancel **only the Wix Premium site plan** — not the domain subscription.
+They are separate line items (see 9b), and the domain is the one asset here
+that cannot be rebuilt: it carries twenty years of history and every inbound
+link and directory listing points at it.
+
+That's **$200–350/year** back, which more than covers the pet-sitter liability
+insurance discussed below.
 
 ---
 

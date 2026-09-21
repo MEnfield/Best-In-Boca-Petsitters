@@ -9,9 +9,6 @@ Anything marked **[Holly]** needs her, not you.
 
 ## Before you start — things that block launch
 
-- [ ] **[Holly]** A real photograph of her. The site ships a deliberately ugly
-      pink placeholder so it can't be mistaken for finished. See "Replacing the
-      placeholder" below.
 - [ ] **Two cat photos still trapped on Wix.** Sixteen of eighteen were
       rescued. These two return `Forbidden` to any external request and need to
       be downloaded from the Wix media manager while you're still logged in:
@@ -240,24 +237,16 @@ item. In `src/components/TrustBar.astro`:
 **Until she actually has it, the site must never imply it.** Nothing currently
 does.
 
-### Replacing the placeholder photo
+### The photo of Holly
 
-1. Save the photo as `src/assets/holly.jpg` (portrait, at least 1000px tall).
-2. In `src/pages/index.astro` and `src/pages/about.astro`, replace the
-   `<img src="/holly-placeholder.svg" …>` block with:
+Shipped: `src/assets/holly.jpg`, used on `/` and `/about`.
 
-   ```astro
-   import holly from "@/assets/holly.jpg";
-   ...
-   <Image src={holly} alt="Holly Rising, owner of Best In Boca Pet Sitters"
-          widths={[420, 640]} sizes="(min-width: 64em) 30vw, 92vw"
-          class="meet__img" />
-   ```
-3. Delete `public/holly-placeholder.svg`.
-
-A real face is the single biggest trust signal on a page like this. Stock
-photography would actively hurt — Boca is a small market and Holly's whole
-asset is that she's the person who's been doing this since 2006.
+The source is a 9:16 phone portrait, which runs absurdly tall in a layout
+column, so it is cropped to **4:5** with `object-position: 50% 22%` — biased
+upward because her face and the cat sit in the top two-thirds and the bottom
+third is mostly shirt. If you ever swap the photo for one framed differently,
+that `object-position` is the number to re-check, in `src/pages/index.astro`
+and `src/pages/about.astro`.
 
 ### Adding the other 14 reviews
 

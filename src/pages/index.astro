@@ -13,6 +13,7 @@ import { site } from "@/data/site";
 import { featuredReviews } from "@/data/reviews";
 import { featuredFaqs } from "@/data/faqs";
 import { heroImage } from "@/data/cats";
+import holly from "@/assets/holly.jpg";
 
 const years = new Date().getFullYear() - site.foundedYear;
 
@@ -117,16 +118,12 @@ const description = `In-home cat sitting in West Boca Raton, Delray Beach and De
   <section class="section section--tint meet">
     <div class="container meet__inner">
       <div class="meet__media">
-        {/*
-          PLACEHOLDER — swap for a real photograph of Holly before launch.
-          Put the file at src/assets/holly.jpg, import it, and render it with
-          <Image> so it gets optimised like the cat photos.
-        */}
-        <img
-          src="/holly-placeholder.svg"
-          alt="Holly Rising, owner of Best In Boca Pet Sitters"
-          width="520"
-          height="650"
+        <Image
+          src={holly}
+          alt="Holly Rising, owner of Best In Boca Pet Sitters, holding a cat"
+          widths={[420, 640, 900]}
+          sizes="(min-width: 56em) 34vw, 92vw"
+          loading="lazy"
           class="meet__img"
         />
       </div>
@@ -369,9 +366,14 @@ const description = `In-home cat sitting in West Boca Raton, Delray Beach and De
     }
   }
 
+  /* The source is a 9:16 phone portrait, which would run absurdly tall in this
+     column. Cropped to 4:5 and biased upward, because the face and the cat sit
+     in the top two-thirds and the bottom third is mostly shirt. */
   .meet__img {
     width: 100%;
-    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: 50% 22%;
     border-radius: var(--r-xl);
   }
 

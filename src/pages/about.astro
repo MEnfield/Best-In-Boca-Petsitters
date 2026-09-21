@@ -1,8 +1,11 @@
 ---
+import { Image } from "astro:assets";
+
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import PageHeader from "@/components/PageHeader.astro";
 import CtaBand from "@/components/CtaBand.astro";
 import ReviewCard from "@/components/ReviewCard.astro";
+import holly from "@/assets/holly.jpg";
 
 import { site } from "@/data/site";
 import { publishedReviews } from "@/data/reviews";
@@ -30,15 +33,13 @@ const longTenure = publishedReviews.filter((r) => r.tenure).slice(0, 2);
   <section class="section">
     <div class="container about__grid">
       <div class="about__media">
-        {/*
-          PLACEHOLDER — replace with a real photograph of Holly before launch.
-          Put it at src/assets/holly.jpg and render with <Image>.
-        */}
-        <img
-          src="/holly-placeholder.svg"
-          alt="Holly Rising, owner of Best In Boca Pet Sitters"
-          width="520"
-          height="650"
+        <Image
+          src={holly}
+          alt="Holly Rising, owner of Best In Boca Pet Sitters, holding a cat"
+          widths={[420, 640, 900]}
+          sizes="(min-width: 64em) 28vw, 92vw"
+          loading="eager"
+          fetchpriority="high"
           class="about__img"
         />
 
@@ -168,9 +169,12 @@ const longTenure = publishedReviews.filter((r) => r.tenure).slice(0, 2);
     }
   }
 
+  /* Same 4:5 crop as the home page — see the note there. */
   .about__img {
     width: 100%;
-    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: 50% 22%;
     border-radius: var(--r-xl);
   }
 

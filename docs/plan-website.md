@@ -231,8 +231,7 @@ Tracked in `cutover-checklist.md`:
 1. **Insurance** (~$150–250/yr) — not currently held, so the site never implies
    it. The trust bar is built to take the badge when she has it. The Wix saving
    pays for it.
-2. **Photo of Holly** — placeholder in place.
-3. **Two cat photos** still on Wix, hard-blocked externally.
-4. **Three held-back reviews** awaiting her decision.
-5. **GBP → service-area business**, so her home address stops being public.
-6. **The other 14 Google reviews.**
+2. **Two cat photos** still on Wix, hard-blocked externally.
+3. **Three held-back reviews** awaiting her decision.
+4. **GBP → service-area business**, so her home address stops being public.
+5. **The other 14 Google reviews.**
